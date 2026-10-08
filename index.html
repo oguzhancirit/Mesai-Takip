@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#13203A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Mesai">
-<title>Mesai Takip</title>
+<meta name="apple-mobile-web-app-title" content="Mesai TEST">
+<title>Mesai Takip TEST</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -290,8 +290,11 @@ button{font:inherit; color:inherit}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--muted); outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.hero{transition:none}.btn:active{transform:none}.sheet{animation:none}}
 </style>
+<!-- TEST: only on the fork's test branch, never merge into main -->
+<style>.testbar{position:fixed; top:0; left:0; right:0; z-index:60; height:calc(env(safe-area-inset-top,0px) + 3px); background:#E8590C; pointer-events:none} .testbar b{position:absolute; top:100%; left:50%; transform:translateX(-50%); padding:.05rem .55rem .15rem; border-radius:0 0 8px 8px; background:#E8590C; color:#fff; font-size:.62rem; font-weight:800; letter-spacing:.12em}</style>
 </head>
 <body>
+<div class="testbar" aria-hidden="true"><b>TEST</b></div>
 <main>
   <header class="top">
     <div><h1 id="title">Bugün</h1><p id="sub"></p></div>
