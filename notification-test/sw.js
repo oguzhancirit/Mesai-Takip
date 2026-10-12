@@ -1,5 +1,5 @@
-const CACHE = "mesai-notification-test-v1";
-const CORE = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "notifications-config.js", "notification-rules.js", "notifications.js"];
+const CACHE = "mesai-takip-v13";
+const CORE = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "notifications-config.js", "notification-rules.js", "notifications.js?v=2"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("mesai-notification-test-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
