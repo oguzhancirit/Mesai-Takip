@@ -1,0 +1,1483 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#13203A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mesai">
+<title>Mesai Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1F5; --surface:#FFFFFF; --ink:#13203A; --muted:#66748A; --line:#DCE2EA; --track:#E6EAF0;
+  --wcf:#E9EDF3; --amber:#F2A541; --amber-ink:#3B2300; --plus:#1F7A4A; --minus:#C0392B; --task:#2F6FD6;
+  --warn-bg:#FDECEA; --info-bg:#EAF1FC; --amb-bg:#FFF3E0; --ok-bg:#E3F4EA; --rap:#7B3FA8; --rap-bg:#F1E6FA; --c-pos:#E2F3E8; --c-neg:#FBE4E1; --c-open:#FFF1D6; --c-izin:#DCEFF7; --c-izin-ink:#1D6A8C; --c-tatil-ink:#A35F00;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1322; --surface:#151F33; --ink:#E8EDF5; --muted:#8E9BB0; --line:#26324A; --track:#1E2A40;
+    --wcf:#2C3A57; --amber:#F2A541; --amber-ink:#2A1800; --plus:#5DD39A; --minus:#FF8A7A; --task:#6EA3FF;
+    --warn-bg:#3A1C1C; --info-bg:#16284A; --amb-bg:#3A2A12; --ok-bg:#163526; --rap:#C79BEA; --rap-bg:#2E2140; --c-pos:#15301F; --c-neg:#3A1D1D; --c-open:#3A2A12; --c-izin:#14303E; --c-izin-ink:#7CC6E8; --c-tatil-ink:#F2B35E; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1322; --surface:#151F33; --ink:#E8EDF5; --muted:#8E9BB0; --line:#26324A; --track:#1E2A40;
+  --wcf:#2C3A57; --amber:#F2A541; --amber-ink:#2A1800; --plus:#5DD39A; --minus:#FF8A7A; --task:#6EA3FF;
+  --warn-bg:#3A1C1C; --info-bg:#16284A; --amb-bg:#3A2A12; --ok-bg:#163526; --rap:#C79BEA; --rap-bg:#2E2140; --c-pos:#15301F; --c-neg:#3A1D1D; --c-open:#3A2A12; --c-izin:#14303E; --c-izin-ink:#7CC6E8; --c-tatil-ink:#F2B35E; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-variant-numeric:tabular-nums; line-height:1.4; -webkit-tap-highlight-color:transparent}
+main{max-width:30rem; margin:0 auto; padding:1rem 1rem calc(4.25rem + env(safe-area-inset-bottom,0px))}
+button{font:inherit; color:inherit}
+.plus{color:var(--plus)} .minus{color:var(--minus)}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:1.1rem}
+.sec{display:flex; justify-content:space-between; align-items:baseline; margin:1.6rem .2rem .55rem}
+.sec h2{margin:0; font-size:.95rem; font-weight:800}
+.txt{background:none; border:0; padding:.2rem; font-weight:700; font-size:.9rem; color:var(--task); cursor:pointer}
+
+/* header */
+.top{display:flex; justify-content:space-between; align-items:center; gap:1rem; margin:.1rem .2rem 1rem}
+.top h1{margin:0; font-size:1.6rem; font-weight:800; letter-spacing:-.02em}
+.top p{margin:0; color:var(--muted); font-size:.9rem}
+.pill{flex:none; display:inline-flex; align-items:center; gap:.45rem; padding:.4rem .75rem; border-radius:999px; font-size:.85rem; font-weight:700; background:var(--surface); border:1px solid var(--line)}
+.pill i{width:.55rem; height:.55rem; border-radius:50%; background:var(--muted)}
+.pill.o i{background:var(--plus)} .pill.g i{background:var(--task)} .pill.b i{background:var(--amber)} .pill.done i{background:var(--ink)}
+.alert{display:flex; justify-content:space-between; align-items:center; gap:.75rem; width:100%; text-align:left; margin:0 0 .8rem; padding:.75rem .9rem; border-radius:14px; background:var(--warn-bg); color:var(--minus); font-weight:700; font-size:.88rem; border:0; cursor:pointer}
+.alert b{flex:none; font-size:1.1rem}
+.demo{margin:0 0 .8rem; padding:.6rem .85rem; border-radius:12px; background:var(--info-bg); font-size:.85rem; font-weight:600}
+
+/* hero */
+.hero{padding:1.25rem 1.2rem 1.15rem; transition:background .25s,border-color .25s}
+.hero.task{border:2px solid var(--task)}
+.hero.brk{background:var(--amber); border-color:var(--amber); color:var(--amber-ink)}
+.hlabel{margin:0; font-size:.88rem; font-weight:700; color:var(--muted)}
+.hero.brk .hlabel,.hero.brk .hsub{color:var(--amber-ink)}
+.hbig{margin:.15rem 0 .1rem; font-size:2.7rem; font-weight:800; letter-spacing:-.03em; line-height:1.05}
+.hsub{margin:0; font-size:.92rem; color:var(--muted)}
+.hsub b{font-weight:800}
+.tl{margin:1rem 0 .2rem}
+.bar{position:relative; height:14px; border-radius:7px; background:var(--track); overflow:hidden}
+.bar > div{position:absolute; top:0; bottom:0}
+.bar .o{background:var(--ink)} .bar .g{background:var(--task)} .bar .b{background:var(--amber)}
+.bar .l{background:repeating-linear-gradient(45deg,var(--track) 0 3px,var(--line) 3px 6px)}
+.bar .v{top:auto; height:4px; background:var(--minus)}
+.bar .k{width:2px; background:var(--muted); opacity:.7}
+.bar .t{width:2px; background:var(--plus)}
+.hero.brk .bar{background:rgba(255,255,255,.45)}
+.tlab{display:flex; justify-content:space-between; margin-top:.3rem; font-size:.74rem; color:var(--muted)}
+.hero.brk .tlab{color:var(--amber-ink)}
+.warn{margin:.85rem 0 0; padding:.65rem .8rem; border-radius:12px; font-size:.86rem; font-weight:600}
+.warn.red{background:var(--warn-bg); color:var(--minus)}
+.warn.amb{background:var(--amb-bg); color:var(--ink)}
+.warn.info{background:var(--info-bg); color:var(--ink)}
+.warn button{display:inline-block; margin-top:.45rem; font-size:.82rem; font-weight:800; padding:.4rem .7rem; border-radius:10px; border:1px solid currentColor; background:transparent; cursor:pointer}
+.acts{margin-top:1.1rem}
+.row2{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:.6rem}
+.btn{display:block; width:100%; padding:1rem .75rem; font-size:1.05rem; font-weight:800; border:0; border-radius:16px; cursor:pointer; background:var(--ink); color:var(--surface)}
+.btn.amber{background:var(--amber); color:var(--amber-ink)}
+.hero.brk .btn{background:var(--amber-ink); color:var(--amber)}
+.btn.line{background:transparent; color:var(--ink); box-shadow:inset 0 0 0 2px var(--line)}
+.btn.armed{background:var(--minus) !important; color:#fff !important; box-shadow:none}
+.btn:active{transform:scale(.985)}
+.link{display:block; margin:.75rem auto 0; background:none; border:0; padding:.35rem .5rem; font-size:.92rem; font-weight:700; color:inherit; text-decoration:underline; text-underline-offset:3px; cursor:pointer}
+.link.armed{text-decoration:none; color:var(--minus)}
+
+/* toilet break: "Molaya çık" has a circular bite taken out of its right end, the round double-ring 💩 button sits in the bite */
+.brkgrp{--wcd:3rem; --wcgap:.2rem; --wcin:.2rem; position:relative; display:flex}
+.brkgrp .btn{width:calc(100% - var(--wcin) - var(--wcd) / 2); border-radius:16px 0 0 16px; padding-left:.5rem; padding-right:calc(var(--wcd) / 2 + var(--wcgap) + .3rem); white-space:nowrap; font-size:.98rem;
+  -webkit-mask-image:radial-gradient(circle at 100% 50%, transparent calc(var(--wcd) / 2 + var(--wcgap)), #000 calc(var(--wcd) / 2 + var(--wcgap) + .6px));
+  mask-image:radial-gradient(circle at 100% 50%, transparent calc(var(--wcd) / 2 + var(--wcgap)), #000 calc(var(--wcd) / 2 + var(--wcgap) + .6px))}
+.wc{position:absolute; top:50%; right:var(--wcin); width:var(--wcd); height:var(--wcd); margin-top:calc(var(--wcd) / -2); padding:0; border:0; border-radius:50%; background:var(--wcf); font-size:1.3rem; line-height:1; cursor:pointer; transition:transform .12s, filter .12s}
+.wc:active{transform:scale(.92); filter:brightness(.93)}
+.wc:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+.row2.wcrow{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+@media (max-width:360px){.brkgrp{--wcd:2.6rem} .brkgrp .btn{font-size:.8rem; white-space:normal; line-height:1.15} .wc{font-size:1.1rem} .row2.wcrow > .btn{font-size:.88rem; padding-left:.4rem; padding-right:.4rem; white-space:nowrap}}
+.tile b small.wcl{display:block; margin-top:.1rem; font-size:.72rem; font-weight:700; color:var(--muted); white-space:nowrap}
+.wcT{min-height:2.2rem; min-width:2.2rem; border:1px solid var(--line); background:var(--surface); border-radius:999px; padding:.2rem .65rem; font-size:.8rem; font-weight:700; line-height:1.3; cursor:pointer; opacity:.55}
+.wcT.on{opacity:1; background:var(--amb-bg); border-color:var(--amber)}
+.rain{position:fixed; inset:0; z-index:35; pointer-events:none; overflow:hidden}
+.rain i{position:absolute; top:-3rem; font-style:normal; line-height:1; will-change:transform,opacity; animation:wcfall linear forwards}
+@keyframes wcfall{0%{transform:translate3d(0,0,0) rotate(0deg); opacity:0} 8%{opacity:1} 85%{opacity:1} 100%{transform:translate3d(var(--dx,0),calc(100vh + 6rem),0) rotate(var(--rot,180deg)); opacity:0}}
+@media (prefers-reduced-motion:reduce){.rain{display:none}}
+
+.tiles{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; margin-top:.6rem}
+.tile{min-width:0; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:.65rem .75rem}
+.tile span{display:block; font-size:.75rem; font-weight:600; color:var(--muted)}
+.tile b{display:block; font-size:clamp(.8rem, 2.2vw + .35rem, 1.05rem); font-weight:800; line-height:1.2; overflow-wrap:anywhere}
+
+/* flow list */
+.flow{list-style:none; margin:0; padding:.2rem 1.1rem}
+.flow li{display:grid; grid-template-columns:6.4rem auto 1fr auto; gap:.55rem; align-items:center; padding:.65rem 0; border-top:1px solid var(--line)}
+.flow li:first-child{border-top:0}
+.flow li.more{display:block; text-align:center; padding:.35rem 0}
+.flow li.more .txt{padding:.35rem .8rem; font-size:.84rem}
+.ft{font-size:.84rem; font-weight:700; white-space:nowrap}
+.fn{font-size:.92rem; font-weight:600}
+.fn small{display:block; font-size:.74rem; font-weight:500; color:var(--muted)}
+.fd{font-size:.9rem; font-weight:800; white-space:nowrap}
+.dot{width:.6rem; height:.6rem; border-radius:50%; background:var(--amber)}
+.dot.o{background:var(--ink)} .dot.g{background:var(--task)} .dot.v{background:var(--minus)}
+.empty{color:var(--muted); margin:0; padding:.85rem 0; font-size:.9rem}
+
+/* calendar */
+.mnav{display:flex; justify-content:space-between; align-items:center; margin:0 0 .7rem}
+.mnav b{font-size:1.05rem; font-weight:800}
+.mnav button{width:2.6rem; height:2.6rem; border-radius:12px; border:1px solid var(--line); background:var(--surface); font-size:1.2rem; font-weight:800; cursor:pointer}
+.mstats{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; margin-bottom:.8rem}
+.mstats .tile b,.tiles .tile b{font-size:clamp(.78rem, 3.5vw, .98rem); white-space:normal}
+.cal{padding:.8rem .65rem; box-shadow:0 8px 24px rgba(19,32,58,.04)}
+.dow,.grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px}
+.dow span{text-align:center; font-size:.7rem; font-weight:700; color:var(--muted); padding-bottom:.35rem}
+.cd{position:relative; aspect-ratio:1 / 1.12; border-radius:10px; border:1px solid var(--line); background:var(--surface); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.08rem; cursor:pointer; padding:0; overflow:hidden}
+.cd .n{font-size:.86rem; font-weight:800; line-height:1}
+.cd .cf{font-size:.62rem; font-weight:800; line-height:1.1; min-height:.7rem}
+.cd.blank{visibility:hidden}
+.cd .cf{color:var(--muted)}
+.cd.s-pos{background:var(--c-pos); border-color:var(--plus)}
+.cd.s-pos .cf{color:var(--plus)}
+.cd.s-neg{background:var(--c-neg); border-color:var(--minus)}
+.cd.s-neg .cf{color:var(--minus)}
+.cd.s-open,.cd.s-live{background:repeating-linear-gradient(135deg,var(--surface) 0 6px,var(--c-open) 6px 12px); border:1.5px dashed var(--amber)}
+.cd.s-open .cf,.cd.s-live .cf{color:var(--ink)}
+.cd.s-we{background:transparent}
+.cd.s-future{background:transparent; opacity:.45}
+.cd.s-plan{opacity:.75}
+.cd.today{box-shadow:inset 0 0 0 2px var(--ink)}
+.cd .flag{position:absolute; top:3px; right:4px; font-size:.55rem; font-weight:800; color:var(--minus)}
+.cd .tb{position:absolute; left:5px; right:5px; bottom:3px; height:3px; border-radius:2px; background:var(--task)}
+.status-guide{display:flex; flex-wrap:wrap; gap:.35rem .7rem; margin:.65rem .2rem .25rem; font-size:.76rem; color:var(--muted)}
+.status-guide span{display:inline-flex; align-items:center; gap:.3rem}
+.status-guide i{width:.64rem; height:.64rem; border-radius:3px; border:1px solid currentColor}
+.status-guide .good{background:var(--c-pos); color:var(--plus)}
+.status-guide .bad{background:var(--c-neg); color:var(--minus)}
+.status-guide .wait{background:var(--c-open); color:var(--amber)}
+.status-guide .task{height:3px; border:0; border-radius:2px; background:var(--task)}
+.canias-alert{background:var(--c-open); color:var(--ink); border:1px solid var(--amber)}
+.tabs #taskBadge{background:var(--amber); color:var(--amber-ink)}
+.notes-intro{padding:1.1rem 1.15rem; border-left:4px solid var(--amber); box-shadow:0 8px 24px rgba(19,32,58,.04)}
+.notes-intro .eyebrow{margin:0 0 .15rem; font-size:.7rem; letter-spacing:.09em; font-weight:800; color:var(--muted)}
+.notes-intro h2{margin:0; font-size:1.2rem; letter-spacing:-.02em}
+.notes-intro p:last-child{margin:.35rem 0 0; color:var(--muted); font-size:.85rem}
+.notes-summary{display:flex; justify-content:space-between; align-items:baseline; margin:1.3rem .2rem .55rem}
+.notes-summary h3{margin:0; font-size:.94rem}
+.notes-summary b{font-size:.82rem; color:var(--muted)}
+.notes-paper{padding:.25rem 1.05rem; box-shadow:0 8px 24px rgba(19,32,58,.04)}
+.canias-empty{margin:0; color:var(--muted); font-size:.88rem}
+.canias-row{position:relative; padding:.95rem .05rem .95rem .9rem; border-bottom:1px dashed var(--line)}
+.canias-row::before{content:""; position:absolute; top:1.05rem; bottom:1.05rem; left:0; border-left:3px solid var(--amber); border-radius:3px}
+.canias-row:last-child{border-bottom:0}
+.canias-head{display:flex; justify-content:space-between; align-items:center; gap:.8rem}
+.canias-head strong{font-size:.92rem}
+.canias-row small{display:block; color:var(--muted); font-size:.77rem; margin:.18rem 0 .5rem}
+.canias-times{font-weight:800; font-size:.92rem; line-height:1.65; margin-top:.3rem}
+.canias-btn{flex:none; border:1px solid var(--ink); background:var(--ink); color:var(--surface); border-radius:10px; padding:.55rem .7rem; font-size:.8rem; font-weight:800; cursor:pointer}
+.canias-btn:disabled{opacity:.45; cursor:default}
+.canias-done{margin:.5rem 0; font-size:.82rem; color:var(--muted)}
+.canias-done summary{cursor:pointer; padding:.7rem 0; font-weight:700}
+.canias-done .canias-row::before{border-color:var(--plus)}
+.canias-done .canias-btn{background:transparent; color:var(--ink); border-color:var(--line)}
+.weeks{list-style:none; margin:0; padding:.2rem 1rem}
+.weeks li{display:grid; grid-template-columns:minmax(0,1fr) 4.9rem 2.1rem minmax(5.6rem,max-content); gap:.35rem; align-items:center; padding:.6rem 0; border-top:1px solid var(--line); font-size:clamp(.78rem, 1.6vw + .45rem, .88rem)}
+.weeks li:first-child{border-top:0}
+.weeks .wh{font-size:.72rem; font-weight:700; color:var(--muted); padding:.5rem 0 .3rem}
+.weeks .wh span:not(:first-child),.weeks .wb,.weeks .wv,.weeks b{text-align:right}
+.weeks .wl{font-weight:700}
+.weeks .wl small{display:block; font-weight:500; font-size:.72rem; color:var(--muted)}
+.weeks b,.weeks .wb{font-weight:800; white-space:nowrap}
+.weeks .wb{font-weight:600}
+.scn{margin:0 0 .6rem; padding:.6rem .8rem; border-radius:12px; background:var(--info-bg); font-size:.84rem; font-weight:600}
+.scn.warnx{background:var(--c-open); color:var(--ink)}
+.legend{display:flex; flex-wrap:wrap; gap:.35rem .9rem; margin:.7rem .2rem 0; font-size:.74rem; color:var(--muted)}
+.legend i{display:inline-block; width:.65rem; height:.65rem; border-radius:3px; margin-right:.3rem; vertical-align:-1px; box-shadow:inset 0 0 0 1px var(--line)}
+.wide{display:block; width:100%; margin-top:.8rem; padding:.85rem; font-weight:800; font-size:.95rem; border-radius:14px; border:1px dashed var(--muted); background:transparent; cursor:pointer}
+
+/* summary */
+.segc{display:grid; grid-template-columns:repeat(3,1fr); gap:4px; padding:4px; border-radius:14px; background:var(--track); margin-bottom:.8rem}
+.segc button{padding:.55rem; border:0; border-radius:10px; background:transparent; font-weight:700; font-size:.9rem; cursor:pointer; color:var(--muted)}
+.segc button.on{background:var(--surface); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.big{display:flex; justify-content:space-between; align-items:flex-end; gap:1rem}
+.big > div{min-width:0}
+.big span{display:block; font-size:.85rem; font-weight:700; color:var(--muted)}
+.big b{display:block; white-space:nowrap; font-size:clamp(1.5rem, 7vw, 2.2rem); font-weight:800; letter-spacing:-.02em; line-height:1.1}
+.big small{font-size:.8rem; color:var(--muted); text-align:right}
+.sg{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:.5rem; margin-top:.6rem}
+.sc{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:.75rem .8rem}
+.sc span{display:block; font-size:.76rem; font-weight:600; color:var(--muted)}
+.sc b{display:block; font-size:clamp(.95rem, 2.8vw + .4rem, 1.15rem); font-weight:800; line-height:1.2}
+.sc small{display:block; font-size:.74rem; color:var(--muted)}
+.chart{position:relative; height:130px; display:flex; align-items:stretch; gap:3px; margin-top:.4rem}
+.chart .c{flex:1; display:flex; flex-direction:column; min-width:0}
+.chart .u,.chart .d{flex:1; display:flex; position:relative}
+.chart .u{align-items:flex-end; border-bottom:1px solid var(--line)}
+.chart .d{align-items:flex-start}
+.chart .u i,.chart .d i{display:block; width:100%; border-radius:4px}
+.chart .u i{background:var(--plus)} .chart .d i{background:var(--minus)}
+.clabels{display:flex; gap:3px; margin-top:.3rem}
+.clabels span{flex:1; text-align:center; font-size:.66rem; color:var(--muted); min-width:0; white-space:nowrap}
+.plist{list-style:none; margin:0; padding:.1rem 1.1rem}
+.plist li{display:flex; justify-content:space-between; align-items:center; gap:.75rem; padding:.7rem 0; border-top:1px solid var(--line)}
+.plist li:first-child{border-top:0}
+.plist b{display:block; font-size:.92rem}
+.plist small{display:block; font-size:.78rem; color:var(--minus); font-weight:600}
+.mini{font-size:.8rem; font-weight:800; padding:.45rem .7rem; border-radius:10px; border:1px solid var(--line); background:var(--surface); cursor:pointer; white-space:nowrap}
+
+/* settings */
+.srow{display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.75rem 0}
+.srow + .srow{border-top:1px solid var(--line)}
+.srow label{flex:1; min-width:0; font-weight:700}
+.pair{display:flex; align-items:center; gap:.35rem; color:var(--muted)}
+@media (max-width:380px){.srow{flex-wrap:wrap; row-gap:.35rem} .srow label{flex:1 0 100%} .pair{width:100%} .pair input{flex:1; min-width:0; width:auto}}
+.pair input{width:6.2rem; font:inherit; font-size:1rem; font-weight:800; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:.45rem .3rem; text-align:center}
+.setcard{padding:.25rem 1.1rem}
+.foot{font-size:.8rem; color:var(--muted); margin:.55rem .2rem 0}
+.bk{display:grid; gap:.5rem}
+.bk button{padding:.85rem; border-radius:14px; border:1px solid var(--line); background:var(--surface); font-weight:800; cursor:pointer}
+
+/* bottom nav */
+.tabs{position:fixed; left:0; right:0; bottom:0; z-index:15; background:var(--surface); border-top:1px solid var(--line); box-shadow:0 -6px 22px rgba(19,32,58,.06); padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs div{max-width:30rem; margin:0 auto; padding:.3rem .4rem; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.12rem}
+.tabs button{position:relative; min-width:0; min-height:44px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:0; padding:.18rem .05rem; border:0; border-radius:11px; background:none; font-size:.68rem; line-height:1.15; white-space:nowrap; letter-spacing:-.01em; font-weight:700; color:var(--muted); cursor:pointer}
+.tabs button.on{background:var(--track); color:var(--ink)}
+.tabs svg{width:19px; height:19px; flex:none}
+.tabs .badge{position:absolute; top:0; left:calc(50% + 7px); min-width:1rem; height:1rem; padding:0 .2rem; border-radius:999px; background:var(--minus); color:#fff; font-size:.62rem; line-height:1rem}
+
+/* sheet */
+.sheet-bg{position:fixed; inset:0; z-index:30; background:rgba(8,12,22,.5); display:flex; align-items:flex-end; justify-content:center}
+.sheet{width:100%; max-width:30rem; max-height:88vh; overflow:auto; background:var(--bg); border-radius:22px 22px 0 0; padding:.6rem 1rem calc(1.4rem + env(safe-area-inset-bottom,0px)); animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(30px); opacity:0}to{transform:none; opacity:1}}
+.grab{width:2.6rem; height:.3rem; border-radius:3px; background:var(--line); margin:0 auto .6rem}
+.sh{display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.7rem}
+.sh b{font-size:1.15rem; font-weight:800}
+.sh button{border:0; background:var(--surface); border-radius:999px; padding:.45rem .85rem; font-weight:800; font-size:.85rem; cursor:pointer}
+.sheet h3{font-size:.78rem; font-weight:800; color:var(--muted); letter-spacing:.02em; margin:1.1rem .2rem .45rem}
+.chips{display:flex; flex-wrap:wrap; gap:.4rem}
+.chip{padding:.5rem .8rem; border-radius:999px; border:1px solid var(--line); background:var(--surface); font-weight:700; font-size:.86rem; cursor:pointer}
+.chip.on{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+.erows{padding:.15rem 1rem}
+.er{display:grid; grid-template-columns:auto 1fr auto; gap:.5rem; align-items:center; padding:.6rem 0; border-top:1px solid var(--line)}
+.er:first-child{border-top:0}
+.er .k{font-weight:700; font-size:.9rem}
+.er .k small{display:block; font-weight:500; font-size:.74rem; color:var(--muted)}
+.times{grid-column:1 / -1; display:flex; align-items:center; gap:.4rem}
+.times input,.form input,.form select{flex:1 1 0; min-width:0; width:100%; font:inherit; font-size:1rem; font-weight:700; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:.45rem .4rem; text-align:center}
+.times span{color:var(--muted)}
+.x{width:2rem; height:2rem; border-radius:50%; border:1px solid var(--line); background:var(--surface); color:var(--muted); font-size:1rem; line-height:1; cursor:pointer}
+.x.armed{width:auto; padding:0 .7rem; border-radius:999px; background:var(--minus); color:#fff; border-color:var(--minus); font-size:.78rem; font-weight:800}
+.form{display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; padding:.85rem 1rem}
+.form label{display:flex; flex-direction:column; gap:.25rem; font-size:.76rem; font-weight:700; color:var(--muted)}
+.form .two{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:.5rem}
+.form .acts2{display:grid; grid-template-columns:1fr 1fr; gap:.5rem}
+.form .acts2 button,.addbar button{padding:.75rem; border-radius:12px; font-weight:800; cursor:pointer; border:1px solid var(--line); background:var(--surface)}
+.form .acts2 .pri,.addbar .pri{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+.addbar{display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-top:.55rem}
+.izin{display:block; width:100%; margin-top:.55rem; padding:.75rem; border-radius:12px; font-weight:800; font-size:.9rem; cursor:pointer; border:1.5px solid var(--minus); background:transparent; color:var(--minus)}
+.izin.on{border-color:var(--plus); color:var(--plus)}
+.okline{margin:0; padding:.75rem 1rem; font-size:.9rem; font-weight:700; color:var(--plus)}
+.ds{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem}
+
+.toast{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(5rem + env(safe-area-inset-bottom,0px)); max-width:calc(100% - 2rem); background:var(--ink); color:var(--surface); padding:.75rem 1rem; border-radius:14px; font-weight:600; font-size:.92rem; z-index:40; box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.note{font-size:.8rem; color:var(--muted); margin:1rem .2rem 0; text-align:center}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--muted); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.hero{transition:none}.btn:active{transform:none}.sheet{animation:none}}
+.notify-options{margin-top:.8rem}.notify-options label{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem 0;border-top:1px solid var(--line);font-size:.85rem;font-weight:700}.notify-options small{display:block;font-size:.74rem;font-weight:400;color:var(--muted);margin-top:.2rem}.notify-options input{flex:none;width:1.15rem;height:1.15rem;accent-color:var(--plus)}.notify-card button:disabled{opacity:.5}.notify-card .bk{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <div><h1 id="title">Bugün</h1><p id="sub"></p></div>
+    <span class="pill" id="pill"><i></i><span id="pillText"></span></span>
+  </header>
+  <div id="demoBox"></div>
+
+  <!-- TODAY -->
+  <section id="tab-today">
+    <button class="alert" id="alert" type="button" hidden><span id="alertText"></span><b>›</b></button>
+    <button class="alert canias-alert" id="caniasAlert" type="button" hidden><span id="caniasAlertText"></span><b>›</b></button>
+    <div class="card hero" id="hero" aria-live="polite">
+      <p class="hlabel" id="hLabel"></p>
+      <p class="hbig" id="hBig"></p>
+      <p class="hsub" id="hSub"></p>
+      <div class="tl" id="todayTL"></div>
+      <div id="warn"></div>
+      <div class="acts" id="acts"></div>
+    </div>
+    <div class="tiles">
+      <div class="tile"><span>Giriş</span><b id="tIn">--:--</b></div>
+      <div class="tile"><span>Mola</span><b id="tBrk">0 dk</b></div>
+      <div class="tile"><span>Fark</span><b id="tDiff">–</b></div>
+    </div>
+    <div class="sec"><h2>Günün akışı</h2><button class="txt" type="button" data-edit="today">Düzenle</button></div>
+    <div class="card" style="padding:0"><ul class="flow" id="flow"></ul></div>
+  </section>
+
+  <!-- LOG -->
+  <section id="tab-log" hidden>
+    <div class="mnav"><button type="button" id="mPrev" aria-label="Önceki ay">‹</button><b id="mTitle"></b><button type="button" id="mNext" aria-label="Sonraki ay">›</button></div>
+    <div class="mstats" id="mStats"></div>
+    <div class="sec"><h2>Takvim</h2></div>
+    <div class="card cal">
+      <div class="dow"><span>Pt</span><span>Sa</span><span>Ça</span><span>Pe</span><span>Cu</span><span>Ct</span><span>Pz</span></div>
+      <div class="grid" id="cal"></div>
+    </div>
+    <div class="status-guide" aria-label="Takvim açıklamaları">
+      <span><i class="good"></i>Yeşil: artı süre</span>
+      <span><i class="bad"></i>Kırmızı: eksik süre</span>
+      <span><i class="wait"></i>Sarı çizgili: açık kayıt</span>
+      <span><i class="task"></i>Mavi çizgi: dış görev</span>
+    </div>
+    <p class="foot" style="margin-top:.25rem">! çekirdek saat ihlalini gösterir. İzin ve tatil günleri adıyla yazılır.</p>
+    <div class="sec"><h2>Haftalık</h2></div>
+    <div class="card" style="padding:0"><ul class="weeks" id="weeks"></ul></div>
+    <p class="foot">Bir güne dokunarak kayıtlarını görebilir ve düzeltebilirsin.</p>
+    <button class="wide" type="button" id="markOpen">+ İzin, rapor veya resmi tatil ekle</button>
+  </section>
+
+  <!-- NOTES -->
+  <section id="tab-notes" hidden>
+    <div class="card notes-intro">
+      <p class="eyebrow">DIŞ GÖREV NOT DEFTERİ</p>
+      <h2>Canias’a girilecekler</h2>
+      <p>Kaydettiğin dış görev saatleri burada listelenir. Canias’a elle girdikten sonra “Girdim”e dokun; hatırlatma kalkar.</p>
+    </div>
+    <div class="notes-summary"><h3>Bekleyen notlar</h3><b id="notesCount"></b></div>
+    <div class="card notes-paper" id="caniasList" aria-live="polite"></div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="tab-sum" hidden>
+    <div class="segc" id="period">
+      <button type="button" data-p="week" class="on">Bu hafta</button><button type="button" data-p="month">Bu ay</button><button type="button" data-p="all">Tümü</button>
+    </div>
+    <div id="sumBody"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="tab-set" hidden>
+    <div class="sec" style="margin-top:.2rem"><h2>Çalışma saatleri</h2></div>
+    <div class="card setcard">
+      <div class="srow"><label for="mesaiS">Mesai</label><span class="pair"><input id="mesaiS" data-set="mesai" type="time">–<input id="mesaiE" data-set="mesai" type="time"></span></div>
+      <div class="srow"><label for="coreS">Çekirdek saat</label><span class="pair"><input id="coreS" data-set="core" type="time">–<input id="coreE" data-set="core" type="time"></span></div>
+      <div class="srow"><label for="lunchS">Yemek arası</label><span class="pair"><input id="lunchS" data-set="lunch" type="time">–<input id="lunchE" data-set="lunch" type="time"></span></div>
+    </div>
+    <p class="foot" id="setInfo"></p>
+    <div class="sec"><h2>Bildirimler</h2></div>
+    <div class="card notify-card">
+      <p class="foot" id="notifyStatus" role="status" style="margin-top:0">Bildirimler kapalı.</p>
+      <div class="bk"><button type="button" id="notifyEnable">Bildirimleri etkinleştir</button><button type="button" id="notifyTest" disabled>Test bildirimi gönder</button></div>
+      <div class="notify-options">
+        <label><span>Mola hatırlatması<small>Açık mola 15 dakikayı geçince, bir kez</small></span><input type="checkbox" id="notify-break" checked></label>
+        <label><span>Çıkış hatırlatması<small>18:30’dan sonra çıkış kaydı hâlâ açıksa</small></span><input type="checkbox" id="notify-exit" checked></label>
+        <label><span>Giriş hatırlatması<small>Hafta içi 08:30 · izin ve tatilde gönderilmez</small></span><input type="checkbox" id="notify-entry" checked></label>
+        <label><span>Haftalık özet<small>Cumartesi 10:00 · tamamlanan günlerin toplamı</small></span><input type="checkbox" id="notify-weekly" checked></label>
+        <label><span>Canias hatırlatması<small>Cuma 14:00 · girilmemiş dış görev varsa</small></span><input type="checkbox" id="notify-canias" checked></label>
+      </div>
+      <p class="foot" style="margin-bottom:0">Geçmişin cihazında kalır. Bildirim için cihaz aboneliğin, açık mola/mesai bilgisi, izin tarihleri ve gerekli özet toplamları servise iletilir. İnternet yoksa son iletilen bilgiler kullanılır. Bu testte hatırlatma kontrolü yaklaşık bir dakikada bir yapılır; gönderimler gecikebilir. Bildirimler giriş veya çıkış kaydetmez.</p>
+    </div>
+    <div class="sec"><h2>Telefonunda dene</h2></div>
+    <div class="card notify-card"><p class="foot" style="margin-top:0">Önce bildirimleri etkinleştir. Aşağıdan bir örnek seç, uygulamayı kapat ve 1–2 dakika bekle. Her seferinde tek örnek planlanır. Bildirime dokununca ilgili sekme açılır.</p>
+    <div class="bk"><button id="notify-sample-break">☕ Mola örneği</button><button id="notify-sample-exit">🌙 Çıkış örneği</button></div>
+    <div class="bk" style="margin-top:.5rem"><button id="notify-sample-entry">👀 Giriş örneği</button><button id="notify-sample-canias">📌 Canias örneği</button></div>
+    <div class="bk" style="margin-top:.5rem"><button id="notify-sample-weekly">📊 Haftalık özet</button></div>
+    <p class="foot">Örnek mesajlar TEST olarak görünür. Gerçek mola kuralını denemek için Bugün sekmesinden mola başlatıp 15 dakika bekleyebilirsin. Sunucu kontrolü yalnızca bir saatlik test oturumu boyunca çalışır.</p>
+    <a href="https://github.com/oguzhancirit/Mesai-Takip/actions/workflows/notification-phone-test.yml" target="_blank" rel="noopener">Test oturumunun durumunu aç</a></div>
+    <div class="sec"><h2>Nasıl hesaplanıyor?</h2></div>
+    <div class="card"><p class="foot" style="margin:0;font-size:.85rem;line-height:1.5">Fark, günü tamamlanmış kayıtlardan hesaplanır. Varsayılan yemek arası ofiste 12:00–13:00, dış görevde 12:00–12:30’dur. Yemek arasında ofisle dış görev arasında geçersen ilk 30 dakika her durumda, kalan kısım ofiste geçtiyse düşülür. Ofisin yemek saatleri Ayarlar’dan değiştirilebilir; dış görevde aynı başlangıçtan itibaren en fazla 30 dakika düşülür. Günlük net hedef değişmez. Öğleye taşan açık mola yemek başlangıcında kapanır. Hafta sonu ve izinli günlerde çalışılan sürenin tamamı artı yazılır, hafta sonu yemek arası düşülmez. Dış görevdeki molalar takip edilmez. Çekirdek saat içinde ofiste ya da dış görevde olmadığın süreler ihlal sayılır.</p></div>
+    <div class="sec"><h2>Yedekleme</h2></div>
+    <div class="bk">
+      <button type="button" id="export">Tüm kayıtları indir (CSV)</button>
+      <button type="button" id="importBtn">Yedekten geri yükle (CSV)</button>
+    </div>
+    <p class="foot">Geri yükleme bu cihazdaki kayıtları silmez, eksik olanları ekler. Bir gün bu cihazda farklı kaydedilmişse bu cihazdaki korunur ve o gün atlanır.</p>
+    <input type="file" id="importFile" accept=".csv,text/csv" hidden>
+    <p class="note" id="note"></p>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="Bölümler"><div>
+  <button type="button" data-tab="today" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Bugün</button>
+  <button type="button" data-tab="log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Kayıtlar</button>
+  <button type="button" data-tab="notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 9h7M8.5 13h7M8.5 17h4"/></svg>Notlar<span class="badge" id="taskBadge" hidden></span></button>
+  <button type="button" data-tab="sum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Özet<span class="badge" id="sumBadge" hidden></span></button>
+  <button type="button" data-tab="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>Ayarlar</button>
+</div></nav>
+
+<div class="sheet-bg" id="sheetBg" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="grab"></div>
+  <div class="sh"><b id="sheetTitle"></b><button type="button" id="sheetClose">Kapat</button></div>
+  <div id="sheetBody"></div>
+</div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="notifications-config.js"></script>
+<script src="notification-rules.js"></script>
+<script src="notifications.js"></script>
+<script>
+(function(){
+  const DEMO = false;
+  const LS = "mesaiTakip:notificationPhoneTest:v1";
+  const $ = id => document.getElementById(id);
+  const DEF = { mesaiS:480, mesaiE:1050, coreS:510, coreE:990, lunchS:720, lunchE:780 };
+  let state = { days:{}, open:null, openWc:false, set:{ ...DEF } };
+  let notifyClient = null;
+  function notifySchedule(){ try { notifyClient?.schedule(); } catch(e){} }
+
+  const num = v => typeof v === "number" && isFinite(v);
+  const TYPES = { normal:"Normal gün", yillik:"Yıllık izin", rapor:"Rapor", tatil:"Resmi tatil" };
+  const typeOf = d => (d && TYPES[d.type] && d.type) || "normal";
+  const norm = d => {
+    if (Array.isArray(d)) return { segs:[], breaks:d.filter(b => b && num(b.s) && num(b.e)), izin:false, type:"normal", caniasConfirmed:"" };
+    d = d || {};
+    let segs = Array.isArray(d.segs) ? d.segs.filter(s => s && num(s.s) && (s.e == null || num(s.e))).map(s => ({ t: s.t === "g" ? "g" : "o", s:s.s, e: num(s.e) ? s.e : null })) : [];
+    if (!Array.isArray(d.segs) && num(d.in)) segs = [{ t:"o", s:d.in, e: num(d.out) ? d.out : null }];
+    const out = { segs, breaks: Array.isArray(d.breaks) ? d.breaks.filter(b => b && num(b.s) && num(b.e) && b.e >= b.s).map(b => b.wc === true ? { s:b.s, e:b.e, wc:true } : { s:b.s, e:b.e }) : [], izin: !!d.izin, type: typeOf(d), caniasConfirmed: typeof d.caniasConfirmed === "string" ? d.caniasConfirmed : "" };
+    if (DEMO && typeof d.note === "string") out.note = d.note;
+    return out;
+  };
+  const normSet = p => {
+    const s = { ...DEF };
+    if (p) for (const k in DEF) if (p[k] === null || num(p[k])) s[k] = p[k];
+    return s;
+  };
+
+  try {
+    const raw = localStorage.getItem(LS);
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p && p.days) {
+        const days = {}; for (const k in p.days) days[k] = norm(p.days[k]);
+        state = { days, open: num(p.open) ? p.open : null, openWc: num(p.open) && p.openWc === true, set: normSet(p.set || p) };
+      }
+    }
+  } catch(e){}
+
+  if (!localStorage.getItem(LS)) { state = {days:demoDays(),open:null,openWc:false,set:{...DEF}}; saveLocal(); }
+  function demoDays(){
+    const pad2 = n => String(n).padStart(2, "0");
+    const key = d => d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+    const T = (d, h, m) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m).getTime();
+    const o = (d, a, b, c, e) => ({ t:"o", s:T(d, a, b), e: c == null ? null : T(d, c, e) });
+    const g = (d, a, b, c, e) => ({ t:"g", s:T(d, a, b), e:T(d, c, e) });
+    const br = (d, a, b, c, e) => ({ s:T(d, a, b), e:T(d, c, e) });
+    // weekday scenarios, oldest first
+    const W = [
+      d => ({ note:"Normal gün, tam 08:00–17:30, iki kısa mola", segs:[o(d,8,0,17,30)], breaks:[br(d,10,0,10,15), br(d,15,0,15,15), { ...br(d,11,0,11,4), wc:true }] }),
+      d => ({ note:"3 günlük yıllık iznin ilk günü", type:"yillik" }),
+      d => ({ note:"Yıllık izin", type:"yillik" }),
+      d => ({ note:"Yıllık izin", type:"yillik" }),
+      d => ({ note:"Geç giriş 09:05, mazeret izni girildi", segs:[o(d,9,5,18,30)], breaks:[br(d,14,0,14,10)], izin:true }),
+      d => ({ note:"Sabah dış görev, öğleden sonra ofis", segs:[g(d,8,30,12,0), o(d,13,0,17,45)], breaks:[br(d,15,30,15,45)] }),
+      d => ({ note:"Öğle arasından geç döndü (13:40), ihlal var, izin girilmedi", segs:[o(d,8,5,12,0), o(d,13,40,18,10)], breaks:[br(d,10,0,10,10)] }),
+      d => ({ note:"Erken çıkış 15:45, izin girilmedi", segs:[o(d,7,50,15,45)], breaks:[br(d,10,30,10,40)] }),
+      d => ({ note:"Rapor (2 gün)", type:"rapor" }),
+      d => ({ note:"Rapor", type:"rapor" }),
+      d => ({ note:"Uzun mesai 07:30–20:00", segs:[o(d,7,30,20,0)], breaks:[br(d,10,0,10,20), br(d,16,0,16,30)] }),
+      d => ({ note:"Mola yemek arasına taşıyor (12:40–13:25), sadece 25 dk sayılmalı", segs:[o(d,8,10,17,40)], breaks:[br(d,10,30,10,45), br(d,12,40,13,25)] }),
+      d => ({ note:"Tüm gün dış görev, dış görevdeki mola sayılmamalı", segs:[g(d,8,0,17,30)], breaks:[br(d,11,0,11,30)] }),
+      d => ({ note:"Ofis kaydının içinde dış görev (çakışan kayıt), çift sayılmamalı", segs:[o(d,8,0,17,30), g(d,10,0,12,0)], breaks:[br(d,15,0,15,10)] }),
+      d => ({ note:"Öğle arasında geldi (12:30), sabah ihlali var, izin girildi", segs:[o(d,12,30,21,0)], breaks:[], izin:true }),
+      d => ({ note:"Resmi tatil", type:"tatil" }),
+      d => ({ note:"Sabah ofis, 11:00'dan sonra dış görev", segs:[o(d,8,10,11,0), g(d,11,0,18,0)], breaks:[br(d,9,30,9,45)] }),
+      d => ({ note:"Çıkış basılmamış, kayıt eksik", segs:[o(d,8,20,null)], breaks:[br(d,10,0,10,15)] }),
+      d => ({ note:"Gün içinde 3 ayrı ofis girişi, 10:00–10:30 arası boşluk ihlal", segs:[o(d,8,0,10,0), o(d,10,30,12,0), o(d,13,0,17,45)], breaks:[] }),
+      d => ({ note:"Resmi tatilde 3 saat çalıştı, tamamı artı", type:"tatil", segs:[o(d,9,0,12,0)], breaks:[] }),
+      d => ({ note:"Erken geldi (07:00), 16:30'da çıktı, ihlal yok", segs:[o(d,7,0,16,30)], breaks:[br(d,12,10,12,40)] }),
+      d => ({ note:"Çok uzun molalar, toplam 1,5 saat", segs:[o(d,8,0,17,30)], breaks:[br(d,9,30,10,15), br(d,14,0,14,45)] }),
+      d => ({ note:"Dış görev, ofis, tekrar dış görev", segs:[g(d,8,0,10,0), o(d,10,0,14,0), g(d,14,0,17,30)], breaks:[br(d,11,0,11,15)] }),
+      d => ({ note:"Yıllık izin (tek gün)", type:"yillik" }),
+      d => ({ note:"Yarım gün çalışıp çıktı, izin girilmedi", segs:[o(d,8,0,12,0)], breaks:[] }),
+      d => ({ note:"Normal gün, 2 mola", segs:[o(d,8,15,17,50)], breaks:[br(d,10,15,10,30), br(d,15,0,15,12)] }),
+      d => ({ note:"Hafif geç giriş 08:40, izin girildi", segs:[o(d,8,40,18,15)], breaks:[br(d,14,20,14,35)], izin:true }),
+      d => ({ note:"Dış görev günü yarıda bitti (15:00), erken çıkış", segs:[g(d,8,0,15,0)], breaks:[] }),
+      d => ({ note:"Normal gün, molasız", segs:[o(d,7,55,17,25)], breaks:[] })
+    ];
+    const WE = [
+      d => ({ note:"Cumartesi çalışma, yemek arası düşülmez", segs:[o(d,10,0,15,0)], breaks:[] }),
+      d => ({ note:"Pazar kısa çalışma, mola sayılır", segs:[o(d,11,0,13,30)], breaks:[br(d,12,0,12,15)] }),
+      d => ({ note:"Cumartesi uzun çalışma", segs:[o(d,9,0,18,0)], breaks:[br(d,13,0,13,30)] })
+    ];
+    const out = {}; let wi = 0, ei = 0;
+    const now = new Date();
+    for (let i = 44; i >= 1; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i), dow = d.getDay();
+      if (dow === 0 || dow === 6) {
+        if (i % 3 === 0 && ei < WE.length) out[key(d)] = norm(WE[ei++](d));
+        continue;
+      }
+      out[key(d)] = norm(W[wi++ % W.length](d));
+    }
+    const s0 = Math.floor(Math.min(T(now, 8, 22), Date.now() - 2 * 60000) / 60000) * 60000;
+    out[key(now)] = norm({ note:"Bugün: ofise gelindi, bir mola verildi", segs:[{ t:"o", s:s0, e:null }], breaks: Date.now() > T(now, 10, 20) ? [br(now, 10, 5, 10, 20)].concat(Date.now() > T(now, 11, 4) ? [{ ...br(now, 11, 0, 11, 4), wc:true }] : []) : [] });
+    return out;
+  }
+
+  const STANDALONE = !window.claude && window.top === window;
+  const LOCAL_NOTE = STANDALONE ? "Kayıtlar bu telefonda tutuluyor. Arada bir yedek al."
+    : "Kayıtlar bu tarayıcıda tutuluyor ve kalıcı olmayabilir. Arada bir yedek al.";
+  if (STANDALONE) {
+    const add = (rel, href) => { const l = document.createElement("link"); l.rel = rel; l.href = href; document.head.appendChild(l); };
+    add("manifest", "manifest.webmanifest"); add("apple-touch-icon", "apple-touch-icon.png");
+    if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+    try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
+  }
+
+  // ---------- storage ----------
+  let mode = "local", db = null, uid = null, chain = Promise.resolve(), unsub = null;
+  function saveLocal(){ try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e){} }
+  function goLocal(){ mode = "local"; if (unsub) { try { unsub(); } catch(e){} unsub = null; } $("note").textContent = LOCAL_NOTE; saveLocal(); }
+  function enqueue(fn){
+    if (mode !== "db") return;
+    chain = chain.then(fn).catch(err => {
+      if (err && err.code === "unavailable") return new Promise(r => setTimeout(r, 800 + Math.random()*800)).then(fn).catch(()=>{});
+      if (err && (err.code === "invalid_argument" || err.code === "revoked" || err.code === "not_granted")) goLocal();
+    });
+  }
+  const isEmpty = d => !d || (!d.segs.length && !d.breaks.length && !d.izin && typeOf(d) === "normal");
+  function writeDay(key){
+    const d = state.days[key];
+    if (d) d.segs.sort((a,b) => a.s - b.s);
+    if (d && !taskSegs(d).length) d.caniasConfirmed = "";
+    if (isEmpty(d)) delete state.days[key];
+    saveLocal();
+    notifySchedule();
+    const body = isEmpty(d) ? null : { date:key, segs:d.segs.map(s => ({ ...s })), breaks:d.breaks.map(b => ({ ...b })), izin:d.izin, type:typeOf(d), caniasConfirmed:d.caniasConfirmed || "" };
+    enqueue(() => { const ref = db.doc("data/users/" + uid + "/d-" + key); return body ? ref.set(body) : ref.delete(); });
+  }
+  function writeOpen(){ saveLocal(); notifySchedule(); const open = state.open, openWc = state.openWc === true; enqueue(() => db.doc("data/users/" + uid + "/state").set({ open, openWc })); }
+  function writeSettings(){ saveLocal(); notifySchedule(); const body = { ...state.set }; enqueue(() => db.doc("data/users/" + uid + "/settings").set(body)); }
+
+  async function connect(){
+    if (!window.claude || typeof window.claude.use !== "function") return;
+    const [d, u] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (!d || !u) return;
+    const [id, owner, editor, canWrite] = await Promise.all([u.id(), u.isOwner(), u.canEdit(), u.can("data.write")]);
+    if (!id || !(owner || editor || canWrite === true)) return;
+    db = d; uid = id; mode = "db";
+    $("note").textContent = "Kayıtlar hesabına kaydediliyor, her cihazdan görebilirsin.";
+    let first = true;
+    unsub = db.collection("data/users/" + uid).onSnapshot(snap => {
+      if (mode !== "db") return;
+      if (first) {
+        first = false;
+        if (snap.empty && (Object.keys(state.days).length || state.open)) {
+          setTimeout(() => { Object.keys(state.days).forEach(writeDay); writeOpen(); writeSettings(); }, 0);
+          return;
+        }
+      }
+      const days = {}; let open = null, openWc = false, set = state.set;
+      snap.docs.forEach(doc => {
+        const b = doc.data(); if (!b) return;
+        if (doc.id === "state") { open = num(b.open) ? b.open : null; openWc = open != null && b.openWc === true; }
+        else if (doc.id === "settings") set = normSet(b);
+        else if (doc.id.startsWith("d-")) days[doc.id.slice(2)] = norm(b);
+      });
+      state = { days, open, openWc, set };
+      saveLocal(); render();
+    }, () => goLocal());
+  }
+
+  // ---------- time helpers ----------
+  const MIN = 60000;
+  const pad = n => String(n).padStart(2, "0");
+  const dayKey = ms => { const d = new Date(ms); return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); };
+  const keyStart = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y, m-1, d).getTime(); };
+  const at = (k, m) => keyStart(k) + m * MIN;
+  const hm = ms => { const d = new Date(ms); return pad(d.getHours()) + ":" + pad(d.getMinutes()); };
+  const mHm = m => m == null ? "" : pad(Math.floor(m/60)) + ":" + pad(m % 60);
+  const hmToM = v => { const hit = /^(\d{1,2}):(\d{2})$/.exec((v || "").trim()); if (!hit) return null; const h = Number(hit[1]), m = Number(hit[2]); return h < 24 && m < 60 ? h * 60 + m : null; };
+  const validDayKey = k => { if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return false; return dayKey(keyStart(k)) === k; };
+  const mins = ms => Math.round(ms / MIN);
+  const dk = ms => ms < MIN && ms > 0 ? "<1 dk" : mins(ms) + " dk";
+  const hdur = ms => { const m = Math.abs(mins(ms)); return m >= 60 ? Math.floor(m/60) + " sa" + (m%60 ? " " + (m%60) + " dk" : "") : m + " dk"; };
+  const signed = ms => { const m = mins(ms); return (m > 0 ? "+" : m < 0 ? "−" : "") + hdur(ms); };
+  const cls = ms => { const m = mins(ms); return m > 0 ? "plus" : m < 0 ? "minus" : ""; };
+  const clockFmt = ms => { const s = Math.max(0, Math.floor(ms/1000)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return (h ? h + ":" + pad(m) : m) + ":" + pad(x); };
+  const dateLabel = (k, o) => new Date(keyStart(k)).toLocaleDateString("tr-TR", o || { day:"numeric", month:"long", weekday:"long" });
+  const isWE = k => { const g = new Date(keyStart(k)).getDay(); return g === 0 || g === 6; };
+  const todayKey = () => dayKey(Date.now());
+
+  // Confirmation follows the exact outside-duty hours; edits reopen the reminder.
+  const taskSegs = d => d.segs.filter(s => s.t === "g").slice().sort((a,b) => a.s - b.s || (a.e || 0) - (b.e || 0));
+  const taskSignature = d => taskSegs(d).map(s => hm(s.s) + "-" + (s.e == null ? "" : hm(s.e))).join("|");
+  const caniasReady = (d, now) => taskSegs(d).every(s => s.e != null && s.e <= now);
+  const caniasDays = now => Object.keys(state.days).filter(k => k <= dayKey(now) && taskSegs(state.days[k]).length).sort().reverse();
+  const caniasPending = now => caniasDays(now).filter(k => state.days[k].caniasConfirmed !== taskSignature(state.days[k]));
+
+  // ---------- interval helpers ----------
+  const merge = list => {
+    const a = list.filter(x => x.e > x.s).map(x => ({ s:x.s, e:x.e })).sort((x,y) => x.s - y.s), out = [];
+    for (const x of a) { const l = out[out.length - 1]; if (l && x.s <= l.e) l.e = Math.max(l.e, x.e); else out.push(x); }
+    return out;
+  };
+  const ovLen = (s, e, merged) => merged.reduce((t, x) => t + Math.max(0, Math.min(e, x.e) - Math.max(s, x.s)), 0);
+  const subtract = (req, merged) => {
+    const out = [];
+    for (const r of req) {
+      let cur = r.s;
+      for (const x of merged) { if (x.e <= cur || x.s >= r.e) continue; if (x.s > cur) out.push({ s:cur, e:Math.min(x.s, r.e) }); cur = Math.max(cur, x.e); if (cur >= r.e) break; }
+      if (cur < r.e) out.push({ s:cur, e:r.e });
+    }
+    return out;
+  };
+
+  // ---------- day model ----------
+  const S = () => state.set;
+  const lunchOn = () => S().lunchS != null && S().lunchE != null && S().lunchE > S().lunchS;
+  const lunchWin = k => lunchOn() && !isWE(k) ? [{ s:at(k, S().lunchS), e:at(k, S().lunchE) }] : [];   // no lunch deduction on weekends
+  const lunchLen = () => lunchOn() ? (S().lunchE - S().lunchS) * MIN : 0;
+  const taskLunchE = () => lunchOn() ? Math.min(S().lunchE, S().lunchS + 30) : null;
+  const blank = () => ({ segs:[], breaks:[], izin:false, type:"normal", caniasConfirmed:"" });
+  const isOff = (k, x) => isWE(k) || typeOf(x) !== "normal";
+  const offLabel = (k, x) => typeOf(x) !== "normal" ? TYPES[typeOf(x)] : (isWE(k) ? "Hafta sonu" : "");
+  const targetNet = (k, x) => isOff(k, x) ? 0 : (S().mesaiE - S().mesaiS) * MIN - lunchLen();
+  const getDay = k => state.days[k] || (state.days[k] = blank());
+  const curSeg = () => { const d = state.days[todayKey()]; return d ? d.segs.find(s => s.e == null) || null : null; };
+
+  // segments with open ends resolved to "now" only for today
+  function resolved(k, x, now){
+    const live = k === dayKey(now);
+    return x.segs.map(s => ({ t:s.t, s:s.s, e: s.e != null ? s.e : (live ? Math.max(now, s.s) : null) })).filter(s => s.e != null);
+  }
+  const presence = (k, x, now) => merge(resolved(k, x, now));
+  // After the first 30 lunch minutes, only recorded external-duty time counts as work.
+  // For target estimates, the current open segment is assumed to continue through lunch.
+  function workLunch(k, x, now, project){
+    const L = lunchWin(k); if (!L.length) return L;
+    const end = at(k, taskLunchE());
+    const tasks = x.segs.filter(s => s.t === "g").map(s => ({ s:Math.max(s.s, end), e:s.e != null ? s.e : (k === dayKey(now) ? (project ? Math.max(now, L[0].e) : now) : end) })).filter(s => s.e > s.s);
+    return subtract(L, merge(tasks));
+  }
+  const netWork = (k, x, now) => { const L = workLunch(k, x, now); return presence(k, x, now).reduce((t, p) => t + (p.e - p.s) - ovLen(p.s, p.e, L), 0); };
+  const complete = x => x.segs.length > 0 ? x.segs.every(s => s.e != null) : typeOf(x) !== "normal";
+  const dayFark = (k, x, now) => netWork(k, x, now) - targetNet(k, x);
+  function excluded(k, x, now){ return merge(lunchWin(k).concat(resolved(k, x, now).filter(s => s.t === "g"))); }
+  function countedBreaks(k, x, list, now){
+    const spans = subtract(merge(list), excluded(k, x, now));
+    // Old break-only records have no location data; keep their historical totals readable.
+    if (!x.segs.length) return spans;
+    const office = merge(resolved(k, x, now).filter(s => s.t === "o"));
+    return merge(spans.flatMap(b => office.map(o => ({ s:Math.max(b.s, o.s), e:Math.min(b.e, o.e) }))));
+  }
+  const spanSum = spans => spans.reduce((t, b) => t + b.e - b.s, 0);
+  const bCount = (k, x, b, now) => spanSum(countedBreaks(k, x, [b], now));
+  const breakSum = (k, x, now) => spanSum(countedBreaks(k, x, x.breaks, now));
+  const wcSum = (k, x, now) => spanSum(countedBreaks(k, x, x.breaks.filter(b => b.wc), now));
+  function liveBreakTotals(k, x, now){
+    const list = x.breaks.slice();
+    if (state.open && dayKey(state.open) === k) list.push({ s:state.open, e:now, wc:state.openWc });
+    return { total:spanSum(countedBreaks(k, x, list, now)), wc:spanSum(countedBreaks(k, x, list.filter(b => b.wc), now)) };
+  }
+  // "34 dk" plus a small "+ 💩 4 dk" line when there was a toilet break (toilet time is part of the break total)
+  const brkHtml = (reg, wc) => dk(Math.max(0, reg)) + (wc > 0 ? '<small class="wcl">+ 💩 ' + dk(wc) + "</small>" : "");
+
+  function violations(k, x, now){
+    if (isOff(k, x) || S().coreS == null || S().coreE == null || S().coreE <= S().coreS) return [];
+    const live = k === dayKey(now);
+    if (!live && !complete(x)) return [];
+    if (!live && !x.segs.length) return [];
+    let req = subtract([{ s:at(k, S().coreS), e:at(k, S().coreE) }], lunchWin(k));
+    if (live) req = req.map(r => ({ s:r.s, e:Math.min(r.e, now) })).filter(r => r.e > r.s);
+    const reqStart = at(k, S().coreS), reqEnd = at(k, S().coreE);
+    return subtract(req, presence(k, x, now)).filter(g => g.e - g.s >= MIN).map(g => ({
+      ...g, kind: g.s === reqStart ? "Geç giriş" : (g.e === reqEnd ? "Erken çıkış" : "Çekirdek saatte yok")
+    }));
+  }
+  function targetEndFrom(k, startMs, remaining, x, now){
+    let t = startMs, left = remaining;
+    for (const L of workLunch(k, x, now, true)) {
+      if (L.e <= t) continue;
+      if (t < L.s) { const work = L.s - t; if (left <= work) return t + left; left -= work; }
+      t = L.e;
+    }
+    return t + left;
+  }
+  function targetMarker(k, x, now){
+    const spans = subtract(presence(k, x, now), workLunch(k, x, now));
+    let left = targetNet(k, x);
+    for (const p of spans) { if (left <= p.e - p.s) return p.s + left; left -= p.e - p.s; }
+    const segs = resolved(k, x, now);
+    return targetEndFrom(k, Math.max(...segs.map(s => s.e)), left, x, now);
+  }
+
+  // ---------- timeline ----------
+  function timelineHtml(k, x, now, labels){
+    const segs = resolved(k, x, now);
+    if (!segs.length) return labels ? '<div class="bar"></div><div class="tlab"><span>' + (isOff(k, x) ? offLabel(k, x) : mHm(S().mesaiS)) + "</span><span>" + (isOff(k, x) ? "" : mHm(S().mesaiE)) + "</span></div>" : "";
+    const we = isOff(k, x);
+    const first = Math.min(...segs.map(s => s.s)), last = Math.max(...segs.map(s => s.e));
+    const tMark = we ? null : targetMarker(k, x, now);
+    let rs = first, re = last;
+    if (!we) { rs = Math.min(rs, at(k, S().mesaiS)); re = Math.max(re, at(k, S().mesaiE), tMark); }
+    const span = (re - rs) || 1, p = ms => Math.max(0, Math.min(100, (ms - rs) / span * 100));
+    const block = (c, s, e) => { const l = p(s), r = p(e); return r > l ? '<div class="' + c + '" style="left:' + l + '%;width:' + Math.max(r - l, .5) + '%"></div>' : ""; };
+    let h = '<div class="bar">';
+    segs.forEach(s => { h += block(s.t, s.s, s.e); });
+    const brs = x.breaks.slice(); if (state.open && dayKey(state.open) === k) brs.push({ s:state.open, e:now });
+    brs.forEach(b => { h += block("b", b.s, b.e); });
+    workLunch(k, x, now, true).forEach(l => { h += block("l", l.s, l.e); });
+    violations(k, x, now).forEach(v => { h += block("v", v.s, v.e); });
+    if (!we && S().coreS != null) [S().coreS, S().coreE].forEach(m => { h += '<div class="k" style="left:calc(' + p(at(k, m)) + '% - 1px)"></div>'; });
+    if (tMark) h += '<div class="t" style="left:calc(' + p(tMark) + '% - 1px)"></div>';
+    h += "</div>";
+    if (labels) h += '<div class="tlab"><span>' + hm(rs) + "</span><span>" + hm(re) + "</span></div>";
+    return h;
+  }
+
+  function breakNote(k, x, b, now){
+    const o = ovLen(b.s, b.e, excluded(k, x, now)); if (!o) return "";
+    return '<small class="ln">' + (o >= b.e - b.s ? "Yemek arası ya da dış görevde, sayılmadı" : mins(o) + " dk düşüldü") + "</small>";
+  }
+
+  // ---------- messages & confirm ----------
+  let toastTimer = 0;
+  function toast(msg, ms){ const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, ms || 3500); }
+  function arm(btn, label, action){
+    if (btn.dataset.armed === "1") { clearTimeout(Number(btn.dataset.timer)); btn.dataset.armed = ""; btn.classList.remove("armed"); btn.textContent = btn.dataset.orig; action(); return; }
+    btn.dataset.orig = btn.textContent; btn.dataset.armed = "1"; btn.classList.add("armed"); btn.textContent = label;
+    btn.dataset.timer = String(setTimeout(() => { btn.dataset.armed = ""; btn.classList.remove("armed"); btn.textContent = btn.dataset.orig; }, 3500));
+  }
+
+  // ---------- actions ----------
+  function rain(){
+    if (tab !== "today" || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+    const old = document.querySelector(".rain"); if (old) old.remove();
+    const box = document.createElement("div"); box.className = "rain"; box.setAttribute("aria-hidden", "true");
+    for (let i = 0; i < 28; i++) {
+      const e = document.createElement("i"), r = Math.random;
+      e.textContent = "💩";
+      e.style.left = (r() * 94 + 1) + "%";
+      e.style.fontSize = (1.1 + r() * 1.2).toFixed(2) + "rem";
+      e.style.animationDuration = (1.6 + r() * 1.1).toFixed(2) + "s";
+      e.style.animationDelay = (r() * 1.0).toFixed(2) + "s";
+      e.style.setProperty("--dx", ((r() - .5) * 70).toFixed(0) + "px");
+      e.style.setProperty("--rot", ((r() - .5) * 540).toFixed(0) + "deg");
+      box.appendChild(e);
+    }
+    document.body.appendChild(box);
+    setTimeout(() => box.remove(), 4200);
+  }
+  const buzz = () => { if (navigator.vibrate) try { navigator.vibrate(30); } catch(e){} };
+  let lock = 0;
+  const debounce = () => { const n = Date.now(); if (n - lock < 700) return false; lock = n; return true; };
+  const fl = ms => Math.floor(ms / MIN) * MIN;     // records are kept at minute precision, same as what is shown and exported
+  function lunchCut(now){
+    if (!state.open) return null;
+    const L = lunchWin(dayKey(state.open))[0];
+    return L && state.open < L.s && now >= L.s ? L.s : null;
+  }
+  function autoCloseLunch(now){
+    const end = lunchCut(now); if (end == null) return false;
+    closeBreak(end); toast("Yemek arası başladı. Mola " + hm(end) + "’da kapatıldı."); return true;
+  }
+  function closeBreak(now){
+    if (!state.open) return;
+    const end = lunchCut(now); if (end != null) now = end;
+    const s = state.open, wc = state.openWc === true, k = dayKey(s); state.open = null; state.openWc = false;
+    const b = { s: fl(s), e: Math.max(fl(now), fl(s)) }; if (wc) b.wc = true;
+    getDay(k).breaks.push(b); writeDay(k); writeOpen();
+  }
+  function startSeg(t, now){
+    const k = dayKey(now), d = getDay(k), c = d.segs.find(s => s.e == null);
+    if (c && c.t === t) return;
+    if (t === "g") closeBreak(now);
+    if (c && now - c.s < MIN) c.t = t;               // switched within a minute: correct the open record instead of leaving a 0-minute one
+    else { if (c) c.e = Math.max(fl(now), c.s); d.segs.push({ t, s: fl(now), e: null }); }
+    writeDay(k);
+    toast((t === "g" ? "Dış görev " : "Ofis girişi ") + hm(now) + " olarak kaydedildi.");
+  }
+  // A day has one location at a time; adjacent records may share a boundary.
+  function segmentError(k, s, skip, day){
+    const others = (day || dayX(k)).segs.filter((z, i) => i !== skip);
+    if (s.e == null && others.some(z => z.e == null)) return "Aynı anda sadece bir açık kayıt olabilir.";
+    const end = s.e == null ? Infinity : s.e;
+    if (end > s.s && others.some(z => (z.e == null || z.e > z.s) && s.s < (z.e == null ? Infinity : z.e) && end > z.s)) return "Bu saatlerde başka bir ofis veya dış görev kaydı var.";
+    return "";
+  }
+  function breakError(k, s, e, skip, withOpen){
+    if (e <= s) return "Bitiş başlangıçtan sonra olmalı.";
+    if (e > Date.now()) return "Bitiş şu andan sonra olamaz.";
+    const office = merge(resolved(k, dayX(k), Date.now()).filter(z => z.t === "o"));
+    if (subtract([{ s, e }], office).some(g => g.e - g.s >= MIN)) return "Bu saatlerde ofis kaydı yok, mola sadece ofisteyken girilebilir.";
+    const others = dayX(k).breaks.filter((b, i) => i !== skip);
+    if (withOpen && state.open && dayKey(state.open) === k) others.push({ s:state.open, e:Date.now() });
+    return others.some(b => s < b.e && e > b.s) ? "Başka bir molayla çakışıyor." : "";
+  }
+  function endDay(now){
+    const k = dayKey(now), d = getDay(k), c = d.segs.find(s => s.e == null);
+    if (!c) return;
+    closeBreak(now); c.e = Math.max(fl(now), c.s); writeDay(k);
+    toast("Çıkış " + hm(now) + " olarak kaydedildi.");
+  }
+  // ---------- ui state ----------
+  let flowAll = false, tab = "today", period = "week", viewMonth = null, sheet = null, addOpen = false, addKind = "o", brOpen = false;
+  const TITLES = { today:"Bugün", log:"Kayıtlar", notes:"Notlar", sum:"Özet", set:"Ayarlar" };
+  const dayX = k => state.days[k] || blank();
+  const compactF = ms => { const m = mins(ms), a = Math.abs(m); return (m > 0 ? "+" : m < 0 ? "−" : "") + (a >= 60 ? Math.floor(a/60) + ":" + pad(a % 60) : a); };
+  const shortDate = k => dateLabel(k, { day:"numeric", month:"long", weekday:"short" });
+  const pendingDays = now => Object.keys(state.days).filter(k => k <= dayKey(now)).sort().reverse()
+    .filter(k => { const y = state.days[k]; return !y.izin && (k < dayKey(now) || !curSeg()) && violations(k, y, now).length; });
+  const missingDays = now => Object.keys(state.days).filter(k => k < dayKey(now) && state.days[k].segs.some(z => z.e == null)).sort().reverse();
+  const focusIn = sel => { const a = document.activeElement; return !!(a && a.closest && a.closest(sel)); };
+  const vSum = list => list.reduce((t, g) => t + g.e - g.s, 0);
+
+  // ---------- today: hero (live) ----------
+  function renderHero(){
+    const now = Date.now(), today = dayKey(now), x = dayX(today), cur = curSeg(), off = isOff(today, x);
+    const segs = resolved(today, x, now), work = netWork(today, x, now), f = work - targetNet(today, x);
+    const hero = $("hero");
+    hero.className = "card hero" + (state.open ? " brk" : cur && cur.t === "g" ? " task" : "");
+
+    const pill = $("pill"), pt = $("pillText");
+    if (state.open) { pill.className = "pill b"; pt.textContent = "Moladasın"; }
+    else if (cur && cur.t === "o") { pill.className = "pill o"; pt.textContent = "Ofistesin"; }
+    else if (cur && cur.t === "g") { pill.className = "pill g"; pt.textContent = "Dış görevdesin"; }
+    else if (x.segs.length) { pill.className = "pill done"; pt.textContent = "Gün bitti"; }
+    else { pill.className = "pill"; pt.textContent = off ? offLabel(today, x) : "Giriş yok"; }
+
+    let label, big, sub;
+    if (state.open) {
+      label = state.openWc ? "Moladasın 💩" : "Moladasın"; big = clockFmt(now - state.open);
+      sub = "Çıkış " + hm(state.open) + ". Döndüğünde aşağıdaki butona bas.";
+    } else if (!segs.length) {
+      label = off ? offLabel(today, x) : "Henüz giriş yapmadın"; big = hm(now);
+      if (off) sub = "Bugün çalışırsan tüm süre artı yazılır.";
+      else {
+        const cs = S().coreS != null ? at(today, S().coreS) : null;
+        sub = cs && now < cs ? "Çekirdek saat " + hm(cs) + "'da başlıyor." : "Mesaiye başlayınca giriş yap.";
+      }
+    } else if (cur) {
+      label = cur.t === "g" ? "Dış görevde, bugün net" : "Bugün net çalışma"; big = hdur(work);
+      if (off) sub = "Bugünkü çalışmanın hepsi artı yazılıyor.";
+      else if (f < 0) {
+        const tEnd = targetEndFrom(today, now, -f, x, now), ce = S().coreE != null ? at(today, S().coreE) : 0;
+        sub = "Hedefe <b>" + hdur(-f) + "</b> kaldı. Hedef çıkış <b>" + hm(Math.max(tEnd, ce)) + "</b>" + (ce > tEnd ? " (çekirdek saat)" : "") + ".";
+      } else sub = 'Hedefi geçtin, fark <b class="plus">' + signed(f) + "</b>.";
+    } else {
+      label = "Gün kapandı"; big = hdur(work);
+      sub = off ? "Hepsi artı yazıldı." : 'Bugünkü fark <b class="' + cls(f) + '">' + signed(f) + "</b>.";
+    }
+    $("hLabel").textContent = label; $("hBig").textContent = big; $("hSub").innerHTML = sub;
+    $("todayTL").innerHTML = segs.length ? timelineHtml(today, x, now, true) : "";
+
+    // single, most important warning
+    const v = violations(today, x, now), vt = vSum(v);
+    let w = "";
+    if (!off && !state.open && S().coreS != null) {
+      const cs = at(today, S().coreS), ce = at(today, S().coreE);
+      const inCore = now >= cs && now < ce && !lunchWin(today).some(l => now >= l.s && now < l.e);
+      if (inCore && !cur) w = '<div class="warn red">Çekirdek saatteyiz, şu an mesaide görünmüyorsun. Bugünkü ihlal ' + hdur(vt) + ".</div>";
+      else if (!cur && x.segs.length && vt > 0 && !x.izin)
+        w = '<div class="warn amb">Bugün ' + hdur(vt) + ' çekirdek saat ihlali var, mazeret izni girmen gerekiyor.<br><button type="button" data-izin="' + today + '">Mazeret iznini girdim</button></div>';
+      else if (!x.segs.length && now < cs && cs - now <= 60 * MIN) w = '<div class="warn info">Çekirdek saate ' + hdur(cs - now) + " kaldı.</div>";
+    }
+    if ($("warn").innerHTML !== w) $("warn").innerHTML = w;
+
+    $("tIn").textContent = x.segs.length ? hm(Math.min(...x.segs.map(s => s.s))) : "--:--";
+    const br = liveBreakTotals(today, x, now);
+    const bh = brkHtml(br.total - br.wc, br.wc); if ($("tBrk").innerHTML !== bh) $("tBrk").innerHTML = bh;
+    const te = $("tDiff");
+    if (segs.length) { te.textContent = signed(f); te.className = cls(f); } else { te.textContent = "–"; te.className = ""; }
+  }
+  // ---------- today: actions (only on state change) ----------
+  function renderActs(){
+    const today = todayKey(), x = dayX(today), cur = curSeg(), off = isOff(today, x);
+    let h;
+    if (state.open) h = '<button class="btn" type="button" data-act="breakEnd">Moladan döndüm</button><button class="link" type="button" data-act="breakCancel">Yanlışlıkla bastım, iptal et</button>';
+    else if (cur && cur.t === "o") h = '<div class="row2 wcrow"><div class="brkgrp"><button class="btn amber" type="button" data-act="breakStart">Molaya çık</button><button class="wc" type="button" data-act="wcStart" aria-label="Tuvalet molası">💩</button></div><button class="btn" type="button" data-act="end">Çıkış yap</button></div><button class="link" type="button" data-act="task">Dış göreve çıktım</button>';
+    else if (cur) h = '<div class="row2"><button class="btn" type="button" data-act="office">Ofise geldim</button><button class="btn line" type="button" data-act="end">Günü bitir</button></div>';
+    else if (x.segs.length) h = '<button class="link" type="button" data-edit="today">Kayıtları düzenle</button>';
+    else h = '<button class="btn' + (off ? " line" : "") + '" type="button" data-act="office">İşe geldim</button><button class="link" type="button" data-act="task">Dış görevdeyim</button>';
+    $("acts").innerHTML = h;
+  }
+
+  // ---------- today: flow ----------
+  function flowHtml(k, now){
+    const x = dayX(k), items = [];
+    x.segs.forEach(s => {
+      const e = s.e != null ? s.e : (k === dayKey(now) ? now : null);
+      items.push({ s:s.s, pin:1, h:'<span class="ft">' + hm(s.s) + " – " + (s.e != null ? hm(s.e) : "…") + '</span><span class="dot ' + s.t + '"></span><span class="fn">' +
+        (s.t === "g" ? "Dış görev" : "Ofis") + (s.e == null ? "<small>Devam ediyor</small>" : "") + '</span><span class="fd">' + (e ? hdur(e - s.s) : "") + "</span>" });
+    });
+    x.breaks.forEach(b => {
+      const c = Math.max(0, bCount(k, x, b, now)), raw = b.e - b.s;
+      items.push({ s:b.s, h:'<span class="ft">' + hm(b.s) + " – " + hm(b.e) + '</span><span class="dot"></span><span class="fn">Mola' + (b.wc ? " 💩" : "") +
+        (c < raw ? "<small>" + (c ? mins(raw - c) + " dk sayılmadı" : "Yemek arası ya da dış görevde") + "</small>" : "") + '</span><span class="fd">' + dk(c) + "</span>" });
+    });
+    if (state.open && dayKey(state.open) === k) items.push({ s:state.open, h:'<span class="ft">' + hm(state.open) + ' – …</span><span class="dot"></span><span class="fn">Mola' + (state.openWc ? " 💩" : "") + '<small>Devam ediyor</small></span><span class="fd"></span>' });
+    violations(k, x, now).forEach(g => {
+      items.push({ s:g.s + 1, h:'<span class="ft minus">' + hm(g.s) + " – " + hm(g.e) + '</span><span class="dot v"></span><span class="fn">' + g.kind + "<small>" + (x.izin ? "Mazeret izni girildi" : "Çekirdek saat ihlali") + '</small></span><span class="fd minus">' + dk(g.e - g.s) + "</span>" });
+    });
+    items.sort((a, b) => a.s - b.s);
+    const pins = items.filter(i => i.pin), rest = items.filter(i => !i.pin), LIM = 4, li = i => "<li>" + i.h + "</li>";
+    if (rest.length > LIM) {
+      const btn = '<li class="more"><button class="txt" type="button" data-flowall="1">' + (flowAll ? "Geçmiş kayıtları gizle ▴" : "Geçmiş kayıtları göster (" + (rest.length - LIM) + ") ▾") + "</button></li>";
+      return pins.concat(flowAll ? rest : rest.slice(-LIM)).sort((a, b) => a.s - b.s).map(li).join("") + btn;
+    }
+    return items.length ? items.map(i => "<li>" + i.h + "</li>").join("") : '<li style="display:block"><p class="empty">Bugün henüz kayıt yok.</p></li>';
+  }
+
+  // ---------- log: calendar ----------
+  function dayStatus(k, x, now){
+    const today = dayKey(now), t = typeOf(x), hasWork = x.segs.length > 0;
+    const vv = k <= today ? violations(k, x, now) : [];
+    let st = "none", f = null;
+    if (k > today) st = t !== "normal" ? "plan" : "future";
+    else if (hasWork && !complete(x)) st = k === today ? "live" : "open";
+    else if (hasWork) { f = dayFark(k, x, now); st = mins(f) > 0 ? "pos" : mins(f) < 0 ? "neg" : "zero"; }
+    else if (t !== "normal") st = "off";
+    else if (isWE(k)) st = "we";
+    else st = "missing";
+    return { st, f, vv, t, task: x.segs.some(s => s.t === "g") };
+  }
+  function renderCanias(now){
+    const pending = caniasPending(now), done = caniasDays(now).filter(k => !pending.includes(k));
+    $("notesCount").textContent = pending.length + " gün";
+    const row = (k, completed) => {
+      const x = state.days[k], ready = caniasReady(x, now);
+      const times = taskSegs(x).map(s => hm(s.s) + " – " + (s.e == null ? "çıkış eksik" : hm(s.e))).join("<br>");
+      return '<div class="canias-row"><div class="canias-head"><strong>' + dateLabel(k) + '</strong><button type="button" class="canias-btn" data-canias="' + k + '" data-done="' + (completed ? "1" : "0") + '"' + (!completed && !ready ? " disabled" : "") + '>' + (completed ? "Geri al" : "Girdim") + '</button></div><small>Dış görev saatleri · ' + (completed ? "Canias’a girildi" : "Canias’a gir") + '</small><div class="canias-times">' + times + '</div>' + (!completed && !ready ? '<small>Önce dış görev çıkış saatini kaydet.</small>' : "") + '</div>';
+    };
+    $("caniasList").innerHTML = (pending.length ? pending.map(k => row(k, false)).join("") : '<p class="canias-empty">Girilecek dış görev kalmadı.</p>') +
+      (done.length ? '<details class="canias-done"><summary>Girilenler (' + done.length + ')</summary>' + done.map(k => row(k, true)).join("") + '</details>' : "");
+  }
+  function renderLog(){
+    const now = Date.now(), today = dayKey(now);
+    if (!viewMonth) viewMonth = today.slice(0, 7);
+    const [y, m] = viewMonth.split("-").map(Number);
+    $("mTitle").textContent = new Date(y, m - 1, 1).toLocaleDateString("tr-TR", { month:"long", year:"numeric" });
+    const first = new Date(y, m - 1, 1), days = new Date(y, m, 0).getDate(), lead = (first.getDay() + 6) % 7;
+    let h = "", mf = 0, mb = 0, mv = 0, done = 0;
+    const TL = { yillik:"İzin", rapor:"Rapor", tatil:"Tatil" };
+    for (let i = 0; i < lead; i++) h += '<span class="cd blank"></span>';
+    for (let d = 1; d <= days; d++) {
+      const k = y + "-" + pad(m) + "-" + pad(d), x = dayX(k), ds = dayStatus(k, x, now);
+      const c = ["cd", "s-" + ds.st];
+      if (isWE(k)) c.push("we");
+      if (k === today) c.push("today");
+      let txt = "";
+      if (ds.f != null) { txt = compactF(ds.f); mf += ds.f; done++; }
+      else if (ds.st === "live") txt = "…";
+      else if (ds.st === "open") txt = "Eksik";
+      else if (ds.st === "off" || ds.st === "plan") txt = TL[ds.t];
+      if (k <= today) mb += breakSum(k, x, now);
+      mv += ds.vv.length;
+      const flag = ds.vv.length ? '<span class="flag" aria-hidden="true">!</span>' : "";
+      h += '<button type="button" class="' + c.join(" ") + '" data-day="' + k + '" aria-label="' + dateLabel(k) + (ds.vv.length ? ', çekirdek saat ihlali' : "") + (ds.task ? ", dış görev" : "") + '"><span class="n">' + d + '</span><span class="cf">' + txt + "</span>" + flag + (ds.task ? '<span class="tb" aria-hidden="true"></span>' : "") + "</button>";
+    }
+    $("cal").innerHTML = h;
+    $("mStats").innerHTML =
+      '<div class="tile"><span>Fark</span><b class="' + cls(mf) + '">' + (done ? signed(mf) : "–") + "</b></div>" +
+      '<div class="tile"><span>Mola</span><b>' + hdur(mb) + "</b></div>" +
+      '<div class="tile"><span>İhlal</span><b class="' + (mv ? "minus" : "") + '">' + mv + "</b></div>";
+
+    // weekly totals for weeks touching this month
+    let wk = "", ws = keyStart(y + "-" + pad(m) + "-01") - lead * 86400000;
+    const monthEnd = keyStart(y + "-" + pad(m) + "-" + pad(days));
+    while (ws <= monthEnd) {
+      let wf = 0, wb = 0, wv = 0, wd = 0, open = 0;
+      const ks = [];
+      for (let i = 0; i < 7; i++) ks.push(dayKey(ws + i * 86400000 + 3600000));
+      if (ks[0] <= today) {
+        ks.forEach(k => { if (k > today) return; const x = dayX(k), ds = dayStatus(k, x, now); if (ds.f != null) { wf += ds.f; wd++; } if (ds.st === "open") open++; wb += breakSum(k, x, now); wv += ds.vv.length; });
+        const lbl = new Date(keyStart(ks[0])).toLocaleDateString("tr-TR", { day:"numeric", month:"short" }) + " – " + new Date(keyStart(ks[6])).toLocaleDateString("tr-TR", { day:"numeric", month:"short" });
+        wk += '<li><span class="wl">' + lbl + "<small>" + wd + " gün" + (open ? ", " + open + " eksik kayıt" : "") + '</small></span><span class="wb">' + hdur(wb) + '</span><span class="wv ' + (wv ? "minus" : "") + '">' + wv + '</span><b class="' + cls(wf) + '">' + (wd ? signed(wf) : "–") + "</b></li>";
+      }
+      ws += 7 * 86400000;
+    }
+    $("weeks").innerHTML = wk ? '<li class="wh"><span>Hafta</span><span>Mola</span><span>İhlal</span><span>Fark</span></li>' + wk : "";
+  }
+
+  // ---------- summary ----------
+  function renderSum(){
+    const now = Date.now(), today = dayKey(now), d0 = new Date(now);
+    document.querySelectorAll("#period button").forEach(b => b.classList.toggle("on", b.dataset.p === period));
+    const ts = keyStart(today), ws = ts - ((d0.getDay() + 6) % 7) * 86400000, ms = new Date(d0.getFullYear(), d0.getMonth(), 1).getTime();
+    const from = period === "week" ? ws : period === "month" ? ms : 0;
+    const keys = Object.keys(state.days).filter(k => k <= today && keyStart(k) >= from).sort();
+    let fark = 0, work = 0, brk = 0, vN = 0, vM = 0, task = 0, done = 0;
+    const tc = { yillik:0, rapor:0, tatil:0 };
+    const perDay = {};
+    keys.forEach(k => {
+      const x = state.days[k], t = typeOf(x);
+      if (t !== "normal") tc[t]++;
+      if (complete(x) && (x.segs.length || t !== "normal")) {
+        const f = dayFark(k, x, now); fark += f; done++; perDay[k] = f;
+      }
+      work += netWork(k, x, now); brk += breakSum(k, x, now);
+      const vv = violations(k, x, now); if (x.segs.length || k < today) { vN += vv.length; vM += vSum(vv); }
+      if (x.segs.some(s => s.t === "g")) task++;
+    });
+    if (state.open && state.open >= from) { const k = dayKey(state.open), x = dayX(k); brk += liveBreakTotals(k, x, now).total - breakSum(k, x, now); }
+
+    // chart data
+    let bars = [];
+    if (period === "week") {
+      const lab = ["Pt","Sa","Ça","Pe","Cu","Ct","Pz"];
+      for (let i = 0; i < 7; i++) { const k = dayKey(ws + i * 86400000 + 3600000); bars.push({ l:lab[i], v: perDay[k] != null ? perDay[k] : null }); }
+    } else if (period === "month") {
+      const n = new Date(d0.getFullYear(), d0.getMonth() + 1, 0).getDate();
+      for (let i = 1; i <= n; i++) { const k = today.slice(0, 8) + pad(i); bars.push({ l: (i === 1 || i % 5 === 0) ? String(i) : "", v: perDay[k] != null ? perDay[k] : null }); }
+    } else {
+      const months = {}; Object.keys(perDay).forEach(k => { const mk = k.slice(0, 7); months[mk] = (months[mk] || 0) + perDay[k]; });
+      const mk = Object.keys(months).sort().slice(-12);
+      bars = mk.map(z => { const [yy, mm] = z.split("-").map(Number); return { l: new Date(yy, mm - 1, 1).toLocaleDateString("tr-TR", { month:"short" }), v: months[z] }; });
+    }
+    const mx = Math.max(60 * MIN, ...bars.map(b => Math.abs(b.v || 0)));
+    const chart = bars.length ? '<div class="card" style="margin-top:.6rem"><p class="hlabel">' + (period === "all" ? "Aylara göre fark" : "Günlere göre fark") + '</p><div class="chart">' +
+      bars.map(b => { const p = b.v == null ? 0 : Math.abs(b.v) / mx * 100;
+        return '<div class="c" title="' + (b.v == null ? "" : signed(b.v)) + '"><div class="u">' + (b.v > 0 ? '<i style="height:' + p + '%"></i>' : "") + '</div><div class="d">' + (b.v < 0 ? '<i style="height:' + p + '%"></i>' : "") + "</div></div>"; }).join("") +
+      '</div><div class="clabels">' + bars.map(b => "<span>" + b.l + "</span>").join("") + "</div></div>" : "";
+
+    const pend = pendingDays(now).filter(k => keyStart(k) >= from || period === "all");
+    const allPend = pendingDays(now);
+    const pendHtml = '<div class="sec" id="pendSec"><h2>Mazeret izni bekleyenler</h2></div>' + (allPend.length
+      ? '<div class="card" style="padding:0"><ul class="plist">' + allPend.map(k => { const vv = violations(k, state.days[k], now);
+          return "<li><div><b>" + shortDate(k) + "</b><small>" + vv.map(g => g.kind.toLocaleLowerCase("tr-TR") + " " + dk(g.e - g.s)).join(", ") + '</small></div><button class="mini" type="button" data-izin="' + k + '">İzin girdim</button></li>'; }).join("") + "</ul></div>"
+      : '<div class="card"><p class="okline" style="padding:0">Bekleyen ihlal yok.</p></div>');
+
+    const miss = missingDays(now);
+    const missHtml = miss.length ? '<div class="sec"><h2>Çıkışı eksik günler</h2></div><div class="card" style="padding:0"><ul class="plist">' + miss.map(k =>
+      "<li><div><b>" + shortDate(k) + '</b><small style="color:var(--amber-ink)">Giriş ' + hm(state.days[k].segs[0].s) + ', çıkış saati girilmemiş</small></div><button class="mini" type="button" data-day="' + k + '">Düzelt</button></li>').join("") + "</ul></div>" : "";
+    const typeTxt = [tc.yillik ? tc.yillik + " gün yıllık izin" : "", tc.rapor ? tc.rapor + " gün rapor" : "", tc.tatil ? tc.tatil + " gün resmi tatil" : ""].filter(Boolean).join(", ");
+    $("sumBody").innerHTML =
+      '<div class="card big"><div><span>Toplam fark</span><b class="' + cls(fark) + '">' + signed(fark) + '</b></div><small>' + done + " tamamlanan gün" + (typeTxt ? "<br>" + typeTxt : "") + "</small></div>" +
+      '<div class="sg">' +
+        '<div class="sc"><span>Net çalışma</span><b>' + hdur(work) + "</b></div>" +
+        '<div class="sc"><span>Mola</span><b>' + hdur(brk) + "</b></div>" +
+        '<div class="sc"><span>Çekirdek saat ihlali</span><b class="' + (vN ? "minus" : "") + '">' + vN + "</b><small>" + (vN ? hdur(vM) : "Temiz") + "</small></div>" +
+        '<div class="sc"><span>Dış görev</span><b>' + task + " gün</b></div>" +
+      "</div>" + chart + missHtml + pendHtml;
+  }
+
+  // ---------- settings ----------
+  function renderSet(){
+    ["mesaiS","mesaiE","coreS","coreE","lunchS","lunchE"].forEach(id => { const el = $(id); if (document.activeElement !== el) el.value = mHm(S()[id]); });
+    try { notifyClient?.show(); } catch(e){}
+    $("setInfo").textContent = "Hafta içi net hedef " + hdur((S().mesaiE - S().mesaiS) * MIN - lunchLen()) + ".";
+  }
+
+  // ---------- sheet ----------
+  function openSheet(kind, key){ sheet = { kind, key }; addOpen = false; addKind = "o"; brOpen = false; $("sheetBg").hidden = false; document.body.style.overflow = "hidden"; renderSheet(); }
+  function closeSheet(){ sheet = null; $("sheetBg").hidden = true; document.body.style.overflow = ""; }
+  function renderSheet(){
+    if (!sheet) return;
+    const now = Date.now();
+    if (sheet.kind === "mark") {
+      $("sheetTitle").textContent = "İzin, rapor, resmi tatil";
+      const future = Object.keys(state.days).filter(k => k > todayKey() && typeOf(state.days[k]) !== "normal").sort();
+      $("sheetBody").innerHTML =
+        '<div class="card form" style="padding:.9rem 1rem"><div class="chips" id="markType">' +
+          ["yillik","rapor","tatil"].map((t, i) => '<button type="button" class="chip' + (i === 0 ? " on" : "") + '" data-mt="' + t + '">' + TYPES[t] + "</button>").join("") + "</div>" +
+          '<div class="two"><label>Başlangıç<input type="date" id="markS"></label><label>Bitiş (isteğe bağlı)<input type="date" id="markE"></label></div>' +
+          '<button class="btn" type="button" id="markBtn">İşaretle</button>' +
+          '<p class="foot" style="margin:0">Aralık seçersen sadece hafta içi günler işaretlenir. Bu günlerde hedef ve çekirdek saat kontrolü olmaz.</p></div>' +
+        (future.length ? '<h3>Planlananlar</h3><div class="card erows">' + future.map(k =>
+          '<div class="er"><span class="dot" style="background:var(--' + ({ yillik:"plus", rapor:"rap", tatil:"amber" }[typeOf(state.days[k])]) + ')"></span><span class="k">' + shortDate(k) + "<small>" + TYPES[typeOf(state.days[k])] + '</small></span><button class="x" type="button" data-unmark="' + k + '" aria-label="Kaldır">×</button></div>').join("") + "</div>" : "");
+      return;
+    }
+    const k = sheet.key, x = dayX(k);
+    $("sheetTitle").textContent = k === todayKey() ? "Bugün, " + dateLabel(k, { day:"numeric", month:"long" }) : dateLabel(k);
+    const segs = resolved(k, x, now), work = netWork(k, x, now), f = work - targetNet(k, x);
+    let h = (x.note ? '<p class="scn">Demo senaryosu: ' + x.note + "</p>" : "") +
+      (k < todayKey() && x.segs.some(z => z.e == null) ? '<p class="scn warnx">Bu günün çıkış saati eksik. Aşağıdaki kayıtta bitiş saatini gir.</p>' : "") +
+      '<div class="ds">' +
+      '<div class="tile"><span>Net</span><b>' + (segs.length ? hdur(work) : "–") + "</b></div>" +
+      '<div class="tile"><span>Fark</span><b class="' + (complete(x) ? cls(f) : "") + '">' + (complete(x) && (x.segs.length || typeOf(x) !== "normal") ? signed(f) : "–") + "</b></div>" +
+      '<div class="tile"><span>Mola</span><b>' + brkHtml(breakSum(k, x, now) - wcSum(k, x, now), wcSum(k, x, now)) + "</b></div></div>";
+    if (segs.length) h += '<div class="card" style="margin-top:.5rem;padding:.8rem 1rem">' + timelineHtml(k, x, now, true) + "</div>";
+
+    h += "<h3>GÜN TÜRÜ</h3><div class=\"chips\">" + Object.keys(TYPES).map(t => '<button type="button" class="chip' + (typeOf(x) === t ? " on" : "") + '" data-settype="' + t + '">' + TYPES[t] + "</button>").join("") + "</div>";
+
+    h += "<h3>OFİS VE DIŞ GÖREV</h3><div class=\"card erows\">";
+    const order = x.segs.map((s, i) => ({ s, i })).sort((a, b) => a.s.s - b.s.s);
+    h += order.length ? order.map(({ s, i }) =>
+      '<div class="er"><span class="dot ' + s.t + '"></span><span class="k">' + (s.t === "g" ? "Dış görev" : "Ofis") + (s.e == null ? "<small>Devam ediyor</small>" : "") + "</span>" +
+      '<button class="x" type="button" data-delseg="' + k + '" data-i="' + i + '" aria-label="Sil">×</button>' +
+      '<div class="times"><input type="time" aria-label="Başlangıç" data-k="' + k + '" data-i="' + i + '" data-f="s" value="' + hm(s.s) + '"><span>–</span>' +
+      '<input type="time" aria-label="Bitiş" data-k="' + k + '" data-i="' + i + '" data-f="e" value="' + (s.e != null ? hm(s.e) : "") + '"></div></div>').join("")
+      : '<p class="empty">Kayıt yok.</p>';
+    h += "</div>";
+    if (addOpen) {
+      h += '<div class="card form" style="margin-top:.55rem"><div class="chips">' +
+        '<button type="button" class="chip' + (addKind === "o" ? " on" : "") + '" data-addkind="o">Ofis</button><button type="button" class="chip' + (addKind === "g" ? " on" : "") + '" data-addkind="g">Dış görev</button></div>' +
+        '<div class="two"><label>Başlangıç<input type="time" id="addS"></label><label>Bitiş<input type="time" id="addE"></label></div>' +
+        '<div class="acts2"><button type="button" data-addcancel="1">Vazgeç</button><button class="pri" type="button" data-addsave="' + k + '">Ekle</button></div></div>';
+    } else {
+      h += '<div class="addbar"><button type="button" data-addopen="1">+ Kayıt ekle</button><button type="button" data-fullg="' + k + '">Tüm gün dış görev</button></div>';
+    }
+
+    if (k <= todayKey() || x.breaks.length) {
+      const brs = x.breaks.map((b, i) => ({ b, i })).sort((p, q) => p.b.s - q.b.s).map(({ b, i }) => {
+        const c = Math.max(0, bCount(k, x, b, now));
+        return '<div class="er" style="grid-template-columns:auto 1fr auto auto"><span class="dot"></span><span class="k">Mola, ' + dk(c) + (c < b.e - b.s ? "<small>" + (c ? mins(b.e - b.s - c) + " dk sayılmadı" : "Sayılmadı") + "</small>" : "") +
+          '</span><button class="wcT' + (b.wc ? " on" : "") + '" type="button" data-wctoggle="' + k + '" data-s="' + b.s + '" aria-label="Tuvalet molası olarak işaretle" aria-pressed="' + (b.wc ? "true" : "false") + '">💩' + (b.wc ? " Tuvalet" : "") + '</button>' +
+          '<button class="x" type="button" data-delbr="' + k + '" data-s="' + b.s + '" aria-label="Sil">×</button>' +
+          '<div class="times"><input type="time" aria-label="Mola başlangıcı" data-bk="' + k + '" data-bi="' + i + '" data-bf="s" value="' + hm(b.s) + '"><span>–</span>' +
+          '<input type="time" aria-label="Mola bitişi" data-bk="' + k + '" data-bi="' + i + '" data-bf="e" value="' + hm(b.e) + '"></div></div>'; });
+      if (state.open && dayKey(state.open) === k)
+        brs.push('<div class="er"><span class="dot"></span><span class="k">Mola' + (state.openWc ? " 💩" : "") + '<small>Devam ediyor. Döndüysen dönüş saatini gir.</small></span><span></span>' +
+          '<div class="times"><input type="time" aria-label="Mola başlangıcı" data-of="s" value="' + hm(state.open) + '"><span>–</span>' +
+          '<input type="time" aria-label="Dönüş saati" data-of="e" value=""></div></div>');
+      h += "<h3>MOLALAR</h3><div class=\"card erows\">" + (brs.length ? brs.join("") : '<p class="empty">Mola yok.</p>') + "</div>";
+      if (brOpen) {
+        h += '<div class="card form" style="margin-top:.55rem"><div class="two"><label>Başlangıç<input type="time" id="brS"></label><label>Bitiş<input type="time" id="brE"></label></div>' +
+          '<div class="acts2"><button type="button" data-brcancel="1">Vazgeç</button><button class="pri" type="button" data-brsave="' + k + '">Ekle</button></div></div>';
+      } else if (k <= todayKey()) {
+        h += '<div class="addbar" style="grid-template-columns:1fr"><button type="button" data-bropen="1">+ Mola ekle</button></div>';
+      }
+    }
+
+    if (!isOff(k, x)) {
+      const v = violations(k, x, now);
+      h += "<h3>ÇEKİRDEK SAAT</h3>";
+      if (v.length) {
+        h += '<div class="card erows">' + v.map(g => '<div class="er"><span class="dot v"></span><span class="k">' + hm(g.s) + " – " + hm(g.e) + "<small>" + g.kind + '</small></span><b class="minus">' + dk(g.e - g.s) + "</b></div>").join("") + "</div>" +
+          '<button class="izin' + (x.izin ? " on" : "") + '" type="button" data-izin="' + k + '">' + (x.izin ? "Mazeret izni girildi (geri almak için dokun)" : hdur(vSum(v)) + " için mazeret izni girdim") + "</button>";
+      } else h += '<div class="card"><p class="okline" style="padding:0">' + (x.segs.length || k === todayKey() ? "İhlal yok." : "Kayıt olmadığı için kontrol edilmedi.") + "</p></div>";
+    }
+    $("sheetBody").innerHTML = h;
+  }
+
+  // ---------- render ----------
+  function render(){
+    const now = Date.now(), today = dayKey(now);
+    autoCloseLunch(now);
+    $("title").textContent = TITLES[tab];
+    $("sub").textContent = tab === "today" ? dateLabel(today) : "";
+    $("pill").hidden = tab !== "today";
+    ["today","log","notes","sum","set"].forEach(t => { $("tab-" + t).hidden = t !== tab; });
+    document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === tab));
+    const pend = pendingDays(now).length, miss = missingDays(now).length, tot = pend + miss;
+    $("sumBadge").hidden = !tot; $("sumBadge").textContent = tot;
+    const taskCount = caniasPending(now).length;
+    $("taskBadge").hidden = !taskCount; $("taskBadge").textContent = taskCount;
+    $("caniasAlert").hidden = !taskCount;
+    $("caniasAlertText").textContent = taskCount + " dış görev günü Canias’a girilmeyi bekliyor";
+    $("alert").hidden = !tot;
+    $("alertText").textContent = [pend ? pend + " günde izin girilmemiş ihlal" : "", miss ? miss + " günde çıkış kaydı eksik" : ""].filter(Boolean).join(", ");
+    if (tab === "today") {
+      if (!document.querySelector("#acts .armed")) renderActs();
+      renderHero();
+      $("flow").innerHTML = flowHtml(today, now);
+    }
+    if (tab === "log") renderLog();
+    if (tab === "notes") renderCanias(now);
+    if (tab === "sum") renderSum();
+    if (tab === "set") renderSet();
+    if (sheet && !focusIn("#sheetBody")) renderSheet();
+  }
+  function renderLive(){ if (autoCloseLunch(Date.now())) render(); else if (tab === "today") renderHero(); }
+
+  // ---------- events ----------
+  function needsConfirm(now){ const k = dayKey(now); return !isOff(k, dayX(k)) && S().coreE != null && now < at(k, S().coreE); }
+  document.addEventListener("click", e => {
+    const t = e.target.closest("button"); if (!t) return;
+    const now = Date.now(), d = t.dataset;
+
+    if (d.tab) { tab = d.tab; window.scrollTo(0, 0); render(); return; }
+    if (d.canias) {
+      const x = state.days[d.canias]; if (!x || !taskSegs(x).length) return;
+      if (d.done !== "1" && (!caniasReady(x, now) || d.canias > dayKey(now))) return;
+      x.caniasConfirmed = d.done === "1" ? "" : taskSignature(x);
+      writeDay(d.canias); render(); toast(d.done === "1" ? "Canias hatırlatması geri geldi." : "Canias’a girildi olarak işaretlendi."); return;
+    }
+    if (d.act) {
+      if (d.act === "end" && needsConfirm(now)) {
+        const first = d.armed !== "1";
+        arm(t, "Erken çıkış, onayla", () => { buzz(); endDay(Date.now()); render(); });
+        if (first) toast("Çekirdek saat " + mHm(S().coreE) + "'a kadar. Şimdi çıkarsan ihlal olur, onaylamak için tekrar bas.");
+        return;
+      }
+      if (d.act === "breakCancel") { arm(t, "Silmek için tekrar bas", () => { state.open = null; state.openWc = false; writeOpen(); render(); toast("Mola kaydı iptal edildi."); }); return; }
+      if (!debounce()) return; buzz();
+      if (d.act === "office") startSeg("o", now);
+      else if (d.act === "task") startSeg("g", now);
+      else if (d.act === "end") endDay(now);
+      else if (d.act === "breakStart" || d.act === "wcStart") {
+        const c = curSeg();
+        if (c && c.t === "o" && !state.open) {
+          if (lunchWin(dayKey(now)).some(l => now >= l.s && now < l.e)) { toast("Şu an yemek arası; ayrıca mola başlatılmaz."); return; }
+          state.open = now; state.openWc = d.act === "wcStart"; writeOpen();
+        }
+      }
+      else if (d.act === "breakEnd") closeBreak(now);
+      render(); if (d.act === "wcStart" && state.open && state.openWc) rain(); return;
+    }
+    if (d.flowall) { flowAll = !flowAll; render(); return; }
+    if (d.edit) { openSheet("day", d.edit === "today" ? todayKey() : d.edit); return; }
+    if (d.day) { openSheet("day", d.day); return; }
+    if (t.id === "alert") { tab = "sum"; render(); setTimeout(() => { const p = $("pendSec"); if (p) p.scrollIntoView({ behavior:"smooth" }); }, 50); return; }
+    if (t.id === "caniasAlert") { tab = "notes"; render(); setTimeout(() => $("caniasList").scrollIntoView({ behavior:"smooth" }), 50); return; }
+    if (t.id === "mPrev" || t.id === "mNext") {
+      const [y, m] = viewMonth.split("-").map(Number), dt = new Date(y, m - 1 + (t.id === "mNext" ? 1 : -1), 1);
+      viewMonth = dt.getFullYear() + "-" + pad(dt.getMonth() + 1); renderLog(); return;
+    }
+    if (d.p) { period = d.p; renderSum(); return; }
+    if (t.id === "markOpen") { openSheet("mark"); return; }
+    if (t.id === "sheetClose") { closeSheet(); render(); return; }
+    if (d.mt) { document.querySelectorAll("#markType .chip").forEach(c => c.classList.toggle("on", c === t)); return; }
+    if (t.id === "markBtn") {
+      const a = $("markS").value, b = $("markE").value || a, on = document.querySelector("#markType .chip.on"), ty = on ? on.dataset.mt : "yillik";
+      if (!a) { toast("Başlangıç tarihini seç."); return; }
+      if (b < a) { toast("Bitiş başlangıçtan önce olamaz."); return; }
+      const keys = [];
+      for (let ms = keyStart(a); ms <= keyStart(b) + 3600000; ms += 86400000) { const k = dayKey(ms + 3600000); if (k > b || keys.includes(k)) continue; if (a !== b && isWE(k)) continue; keys.push(k); }
+      if (keys.length > 60) { toast("En fazla 60 gün işaretlenebilir."); return; }
+      keys.forEach(k => { getDay(k).type = ty; writeDay(k); });
+      renderSheet(); render(); toast(keys.length + " gün " + TYPES[ty].toLocaleLowerCase("tr-TR") + " olarak işaretlendi."); return;
+    }
+    if (d.unmark) { const day = state.days[d.unmark]; if (day) { day.type = "normal"; writeDay(d.unmark); } renderSheet(); render(); toast("İşaret kaldırıldı."); return; }
+    if (d.settype) { const k = sheet.key, day = getDay(k); day.type = d.settype; writeDay(k); renderSheet(); render(); toast(TYPES[d.settype] + " olarak ayarlandı."); return; }
+    if (d.addopen) { addOpen = true; renderSheet(); return; }
+    if (d.addcancel) { addOpen = false; renderSheet(); return; }
+    if (d.addkind) { addKind = d.addkind; document.querySelectorAll("[data-addkind]").forEach(c => c.classList.toggle("on", c === t)); return; }
+    if (d.addsave) {
+      const k = d.addsave, a = hmToM($("addS").value), b = hmToM($("addE").value);
+      if (a == null || b == null) { toast("Başlangıç ve bitiş saatini gir."); return; }
+      if (b <= a) { toast("Bitiş başlangıçtan sonra olmalı."); return; }
+      const s = { t:addKind, s:at(k, a), e:at(k, b) }, err = segmentError(k, s, -1);
+      if (err) { toast(err); return; }
+      getDay(k).segs.push(s); writeDay(k); addOpen = false;
+      renderSheet(); render(); toast((addKind === "g" ? "Dış görev" : "Ofis") + " kaydı eklendi."); return;
+    }
+    if (d.bropen) { brOpen = true; renderSheet(); return; }
+    if (d.brcancel) { brOpen = false; renderSheet(); return; }
+    if (d.brsave) {
+      const k = d.brsave, a = hmToM($("brS").value), b = hmToM($("brE").value);
+      if (a == null || b == null) { toast("Başlangıç ve bitiş saatini gir."); return; }
+      const s0 = at(k, a), e0 = at(k, b), err = breakError(k, s0, e0, -1, true);
+      if (err) { toast(err); return; }
+      getDay(k).breaks.push({ s:s0, e:e0 }); writeDay(k); brOpen = false;
+      renderSheet(); render(); toast("Mola " + hm(s0) + " – " + hm(e0) + " eklendi."); return;
+    }
+    if (d.fullg) {
+      if (dayX(d.fullg).segs.length) { toast("Bu günde kayıt var. Dış görev saatlerini Kayıt ekle ile gir."); return; }
+      const k = d.fullg, shorter = lunchOn() && !isOff(k, dayX(k)) ? (S().lunchE - taskLunchE()) : 0;
+      getDay(k).segs.push({ t:"g", s:at(k, S().mesaiS), e:at(k, S().mesaiE - shorter) }); writeDay(k);
+      renderSheet(); render(); toast("Tüm gün dış görev eklendi."); return;
+    }
+    if (d.delseg) {
+      const k = d.delseg, i = Number(d.i), day = state.days[k]; if (!day || !day.segs[i]) return;
+      arm(t, "Sil?", () => { day.segs.splice(i, 1); writeDay(k); renderSheet(); render(); toast("Kayıt silindi."); }); return;
+    }
+    if (d.wctoggle) {
+      const k = d.wctoggle, s0 = Number(d.s), day = state.days[k], b = day && day.breaks.find(z => z.s === s0); if (!b) return;
+      if (b.wc) delete b.wc; else b.wc = true;
+      writeDay(k); renderSheet(); render(); toast(b.wc ? "Tuvalet molası olarak işaretlendi." : "Normal mola olarak işaretlendi."); return;
+    }
+    if (d.delbr) {
+      const k = d.delbr, s0 = Number(d.s), day = state.days[k]; if (!day) return;
+      arm(t, "Sil?", () => { day.breaks = day.breaks.filter(b => b.s !== s0); writeDay(k); renderSheet(); render(); toast("Mola silindi."); }); return;
+    }
+    if (d.izin) {
+      const k = d.izin, day = getDay(k); day.izin = !day.izin; writeDay(k); render(); if (sheet) renderSheet();
+      toast(day.izin ? "Mazeret izni girildi olarak işaretlendi." : "Mazeret izni işareti kaldırıldı."); return;
+    }
+  });
+  $("sheetBg").addEventListener("click", e => { if (e.target === $("sheetBg")) { closeSheet(); render(); } });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && sheet) { closeSheet(); render(); } });
+
+  document.addEventListener("change", e => {
+    const inp = e.target;
+    if (inp.dataset.set) {
+      const g = inp.dataset.set, sM = hmToM($(g + "S").value), eM = hmToM($(g + "E").value);
+      if (g === "lunch" && sM == null && eM == null) { state.set.lunchS = null; state.set.lunchE = null; writeSettings(); render(); toast("Yemek arası kaldırıldı."); return; }
+      if (sM == null || eM == null) return;
+      if (eM <= sM) { toast("Bitiş başlangıçtan sonra olmalı."); render(); return; }
+      state.set[g + "S"] = sM; state.set[g + "E"] = eM; writeSettings(); inp.blur(); render(); toast("Ayar kaydedildi."); return;
+    }
+    if (inp.dataset.bf && inp.dataset.bk) {
+      const k = inp.dataset.bk, i = Number(inp.dataset.bi), day = state.days[k]; if (!day || !day.breaks[i]) return;
+      const b = day.breaks[i], m = hmToM(inp.value);
+      if (m == null) { renderSheet(); return; }
+      const s0 = inp.dataset.bf === "s" ? at(k, m) : b.s, e0 = inp.dataset.bf === "e" ? at(k, m) : b.e;
+      const err = breakError(k, s0, e0, i, true);
+      if (err) { toast(err); renderSheet(); return; }
+      b.s = s0; b.e = e0; writeDay(k); inp.blur(); renderSheet(); render(); toast("Mola " + hm(s0) + " – " + hm(e0) + " olarak düzeltildi."); return;
+    }
+    if (inp.dataset.of) {
+      if (!state.open) { renderSheet(); return; }
+      const k = dayKey(state.open), m = hmToM(inp.value);
+      if (m == null) { renderSheet(); return; }
+      const ms = at(k, m);
+      if (inp.dataset.of === "s") {
+        if (ms >= Date.now()) { toast("Başlangıç şu andan sonra olamaz."); renderSheet(); return; }
+        const err = breakError(k, ms, Date.now(), -1, false);
+        if (err) { toast(err); renderSheet(); return; }
+        state.open = ms; writeOpen(); toast("Mola başlangıcı " + hm(ms) + " olarak düzeltildi.");
+      } else {
+        const s0 = fl(state.open), err = breakError(k, s0, ms, -1, false);
+        if (err) { toast(err); renderSheet(); return; }
+        const end = lunchCut(ms) == null ? ms : lunchCut(ms);
+        closeBreak(end);
+        toast("Mola " + hm(s0) + " – " + hm(end) + " olarak kaydedildi.");
+      }
+      inp.blur(); renderSheet(); render(); return;
+    }
+    if (inp.dataset.f && inp.dataset.k) {
+      const k = inp.dataset.k, i = Number(inp.dataset.i), day = state.days[k]; if (!day || !day.segs[i]) return;
+      const seg = { ...day.segs[i] }, m = hmToM(inp.value);
+      if (inp.dataset.f === "s") {
+        if (m == null) { renderSheet(); return; }
+        const ms = at(k, m); if (seg.e != null && ms >= seg.e) { toast("Başlangıç bitişten önce olmalı."); renderSheet(); return; }
+        seg.s = ms;
+      } else {
+        if (m == null) seg.e = null;
+        else { const ms = at(k, m); if (ms <= seg.s) { toast("Bitiş başlangıçtan sonra olmalı."); renderSheet(); return; } seg.e = ms; }
+        if (seg.e == null && (k !== todayKey() || day.segs.some((s, j) => j !== i && s.e == null))) {
+          if (k !== todayKey()) toast("Geçmiş günlerde bitiş saati boş bırakılamaz."); else toast("Aynı anda sadece bir açık kayıt olabilir.");
+          renderSheet(); return;
+        }
+      }
+      const err = segmentError(k, seg, i);
+      if (err) { toast(err); renderSheet(); return; }
+      day.segs[i] = seg;
+      writeDay(k); inp.blur(); renderSheet(); render();
+    }
+  });
+  // ---------- export / import ----------
+  $("export").addEventListener("click", async () => {
+    const now = Date.now(), keys = Object.keys(state.days).sort(), c = n => n.toFixed(0);
+    const list = (x, t) => x.segs.filter(s => s.t === t).sort((a, b) => a.s - b.s).map(s => hm(s.s) + "-" + (s.e != null ? hm(s.e) : "")).join(" | ");
+    const lines = ["Tarih;Gün;Gün türü;Ofis;Dış görev;Net çalışılan (dk);Fark (dk);Mola sayısı;Mola (dk);Çekirdek ihlal sayısı;Çekirdek ihlal (dk);Mazeret izni;Canias’a girildi"];
+    let fT = 0, bT = 0, vT = 0, vN = 0;
+    keys.forEach(k => {
+      const x = state.days[k], bs = breakSum(k, x, now) / MIN; bT += bs;
+      let w = "", f = "";
+      if (complete(x)) { w = c(netWork(k, x, now) / MIN); const fm = dayFark(k, x, now) / MIN; f = c(fm); fT += fm; }
+      const vv = violations(k, x, now), vm = vv.reduce((t, g) => t + g.e - g.s, 0) / MIN; vT += vm; vN += vv.length;
+      lines.push([k, new Date(keyStart(k)).toLocaleDateString("tr-TR", { weekday:"long" }), typeOf(x) === "normal" ? "" : TYPES[typeOf(x)], list(x, "o"), list(x, "g"), w, f, x.breaks.length, c(bs), vv.length, c(vm), x.izin ? "Evet" : "", taskSegs(x).length && x.caniasConfirmed === taskSignature(x) ? "Evet" : ""].join(";"));
+    });
+    lines.push(["Toplam", "", "", "", "", "", c(fT), "", c(bT), vN, c(vT), ""].join(";"));
+    lines.push("", "Molalar", "Tarih;Çıkış;Giriş;Süre (dk);Sayılan (dk);Tür");
+    keys.forEach(k => { const x = state.days[k]; x.breaks.slice().sort((a, b) => a.s - b.s).forEach(b =>
+      lines.push([k, hm(b.s), hm(b.e), ((b.e - b.s) / MIN).toFixed(1).replace(".", ","), (Math.max(0, bCount(k, x, b, now)) / MIN).toFixed(1).replace(".", ","), b.wc ? "Tuvalet" : ""].join(";"))); });
+    const csv = "\ufeff" + lines.join("\r\n"), name = "mesai-takip-" + dayKey(now) + ".csv";
+    let dl = null;
+    try { if (window.claude && window.claude.use) dl = await window.claude.use("downloads"); } catch(e){}
+    if (dl) { try { await dl.save({ filename:name, data:csv }); return; } catch(err) { if (err && err.code === "declined") return; } }
+    if (window.top === window) {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type:"text/csv;charset=utf-8" })); a.download = name;
+      document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+      toast("Yedek dosyası indirildi."); return;
+    }
+    try { await navigator.clipboard.writeText(csv); toast("Kayıtlar panoya kopyalandı."); } catch(e) { toast("İndirme bu görünümde kullanılamıyor."); }
+  });
+
+  function importCsv(text){
+    // A broken file (bad time/date, reversed or clashing records inside the file) is rejected as a whole.
+    // A day that differs from what this device already has is skipped; the device copy wins.
+    const pending = new Map(), own = new Map(), skipped = new Set(); let section = "days", idx = null, breakHasType = false;
+    const skip = k => { pending.delete(k); skipped.add(k); };
+    const toMs = (k, t) => { const value = (t || "").trim(); if (!value) return null; const m = hmToM(value); if (m == null) throw new Error(k + ": geçersiz saat " + value); return at(k, m); };
+    const parseList = (k, str, t) => (str || "").split("|").map(p => p.trim()).filter(Boolean).map(p => {
+      const parts = p.split("-"); if (parts.length !== 2) throw new Error(k + ": başlangıç-bitiş saatlerini kontrol et.");
+      const s = toMs(k, parts[0]), e = toMs(k, parts[1]);
+      if (s == null || (e != null && e < s)) throw new Error(k + ": bitiş başlangıçtan önce olamaz.");
+      return { t, s, e };
+    });
+    text.replace(/^\ufeff/, "").split(/\r?\n/).forEach(line => {
+      const c = line.split(";"), head = (c[0] || "").trim();
+      if (line.trim() === "Molalar") { section = "breaks"; return; }
+      if (head === "Tarih" && section === "days") { idx = {}; c.forEach((n, i) => { idx[n.trim()] = i; }); return; }
+      if (head === "Tarih" && section === "breaks") { breakHasType = c.some(n => n.trim() === "Tür"); return; }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(head)) return;
+      if (!validDayKey(head)) throw new Error("Geçersiz tarih: " + head);
+      const k = head;
+      if (section === "days" && idx) {
+        let segs = [];
+        if (idx["Ofis"] != null) segs = segs.concat(parseList(k, c[idx["Ofis"]], "o"));
+        if (idx["Dış görev"] != null) segs = segs.concat(parseList(k, c[idx["Dış görev"]], "g"));
+        if (idx["Giriş"] != null) { const s = toMs(k, c[idx["Giriş"]]), e = toMs(k, c[idx["Çıkış"]]); if (s != null) { if (e != null && e < s) throw new Error(k + ": bitiş başlangıçtan önce olamaz."); segs.push({ t:"o", s, e }); } }
+        const imported = idx["Dış görev"] != null ? parseList(k, c[idx["Dış görev"]], "g") : [];
+        const file = own.get(k) || { segs:[] }; own.set(k, file);
+        segs.forEach(s => { const err = segmentError(k, s, -1, file); if (err) throw new Error(k + ": " + err); file.segs.push(s); });
+        if (skipped.has(k)) return;
+        if (!pending.has(k)) pending.set(k, norm(state.days[k]));
+        const d = pending.get(k);
+        const clash = segs.some(s => {
+          const old = d.segs.find(z => Math.abs(z.s - s.s) < MIN && z.t === s.t);
+          if (old) {
+            // Same record; a backup taken while it was still open is older than the closed copy here.
+            if (s.e == null || (old.e != null && Math.abs(old.e - s.e) < MIN)) return false;
+            return true;
+          }
+          if (segmentError(k, s, -1, d)) return true;
+          d.segs.push(s); return false;
+        });
+        if (clash) { skip(k); return; }
+        if (idx["Gün türü"] != null) { const lbl = (c[idx["Gün türü"]] || "").trim(); const t = Object.keys(TYPES).find(z => TYPES[z] === lbl); if (t && t !== "normal") d.type = t; }
+        if (idx["Mazeret izni"] != null && (c[idx["Mazeret izni"]] || "").trim() === "Evet") d.izin = true;
+        if (idx["Canias’a girildi"] != null && (c[idx["Canias’a girildi"]] || "").trim() === "Evet") {
+          if (imported.length && taskSignature({ segs:imported }) === taskSignature(d)) d.caniasConfirmed = taskSignature(d);
+        }
+      } else if (section === "breaks") {
+        const s0 = toMs(k, c[1]), e0 = toMs(k, c[2]);
+        if (s0 == null || e0 == null || e0 < s0) throw new Error(k + ": mola başlangıç ve bitişini kontrol et.");
+        if (skipped.has(k)) return;
+        if (!pending.has(k)) pending.set(k, norm(state.days[k]));
+        const d = pending.get(k), old = d.breaks.find(b => Math.abs(b.s - s0) < MIN), wc = (c[5] || "").trim() === "Tuvalet";
+        if (old) {
+          if (Math.abs(old.e - e0) >= MIN || (breakHasType && !!old.wc !== wc)) skip(k);
+        } else d.breaks.push(wc ? { s:s0, e:e0, wc:true } : { s:s0, e:e0 });
+      }
+    });
+    // The whole file is checked before any day is saved.
+    pending.forEach((d, k) => { state.days[k] = d; writeDay(k); });
+    return { loaded:pending.size, skipped:[...skipped].sort() };
+  }
+  $("importBtn").addEventListener("click", () => $("importFile").click());
+  $("importFile").addEventListener("change", async e => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    try {
+      const r = importCsv(await f.text()), sk = r.skipped; render();
+      if (!sk.length) toast(r.loaded ? r.loaded + " günlük kayıt yüklendi." : "Dosyada kayıt bulunamadı.");
+      else {
+        const days = sk.slice(0, 5).map(k => k.slice(8) + "." + k.slice(5, 7)).join(", ") + (sk.length > 5 ? " ve " + (sk.length - 5) + " gün daha" : "");
+        toast((r.loaded ? r.loaded + " günlük kayıt yüklendi. " : "") + sk.length + " gün atlandı, bu cihazdaki kayıt farklı: " + days + ".", 8000);
+      }
+    }
+    catch(err) { toast("Yedek yüklenemedi. " + (err.message || "Dosya okunamadı.")); }
+    e.target.value = "";
+  });
+
+
+  $("note").textContent = DEMO ? "Demo modu: kayıtlar örnek veridir, sayfa yenilenince sıfırlanır." : LOCAL_NOTE;
+  $("demoBox").innerHTML = '<p class="demo">BİLDİRİM TESTİ · Örnek kayıtlar yüklü. Gerçek mesai kayıtların bu testte kullanılmaz.</p>';
+  setInterval(renderLive, 1000);
+  setInterval(() => { if (!focusIn("#sheetBody,#tab-set")) render(); }, 60000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+  if (DEMO) window.__mt = { get state(){ return state; }, set state(v){ state = v; }, norm, netWork, dayFark, violations, breakSum, complete, targetNet, isOff, presence, importCsv, render, dayKey, at, typeOf, missingDays, pendingDays };
+  function notificationSnapshot(){
+    const now=Date.now(),today=dayKey(now),x=norm(state.days[today]);
+    const start=window.MesaiNotificationRules.monday(today),end=window.MesaiNotificationRules.day(keyStart(start)+4*86400000+12*60*MIN);
+    let weekMinutes=0,weekDays=0,weekMissing=0;
+    for(const k of Object.keys(state.days).filter(k=>k>=start&&k<=end&&k<=today)){
+      const d=norm(state.days[k]);
+      if(complete(d)&&(d.segs.length||typeOf(d)!=="normal")){weekMinutes+=dayFark(k,d,now)/MIN;weekDays++;}
+      else if(d.segs.length)weekMissing++;
+    }
+    const b=state.open&&dayKey(state.open)===today?state.open:null,L=lunchWin(today)[0];
+    return {capturedAt:now,day:today,hasEntry:x.segs.length>0,shiftOpen:x.segs.some(s=>s.e==null),breakStart:b,breakUntil:b&&L&&b<L.s?L.s:null,
+      offDates:Object.keys(state.days).filter(k=>k>=today&&keyStart(k)<now+180*86400000&&typeOf(state.days[k])!=="normal"),weekStart:start,weekMinutes:Math.round(weekMinutes),weekDays,weekMissing,caniasCount:caniasPending(now).length};
+  }
+  if(!DEMO&&STANDALONE&&window.MesaiNotifications&&window.MesaiNotificationRules){
+    try{notifyClient=window.MesaiNotifications.create({getSnapshot:notificationSnapshot,onOpen(t){if(["today","notes","sum"].includes(t)){tab=t;render();}}});}
+    catch{$("notifyStatus").textContent="Bildirimler başlatılamadı. Mesai takibi etkilenmedi.";}
+  }
+  render();
+  // Phone test stays local; never connects to an attendance account.
+})();
+</script>
+</body>
+</html>

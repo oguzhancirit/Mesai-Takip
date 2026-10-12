@@ -1,0 +1,28 @@
+name: Telefon bildirimi testi (1 saat)
+on:
+  push:
+    branches: [test]
+    paths:
+      - 'notification-test/**'
+      - '.github/workflows/notification-phone-test.yml'
+      - '.github/scripts/phone-test.mjs'
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: notification-phone-test
+  cancel-in-progress: true
+jobs:
+  phone-test:
+    if: github.repository == 'oguzhancirit/Mesai-Takip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bir saat boyunca dakikada bir test bildirimlerini kontrol et
+        shell: bash
+        run: |
+          for iteration in $(seq 1 60); do
+            node .github/scripts/phone-test.mjs
+            if [ "$iteration" -lt 60 ]; then sleep 60; fi
+          done
