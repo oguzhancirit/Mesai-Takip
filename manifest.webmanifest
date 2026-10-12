@@ -1,6 +1,6 @@
 {
-  "name": "Mesai Takip · Bildirim Testi",
-  "short_name": "Mesai Test",
+  "name": "Mesai Takip",
+  "short_name": "Mesai",
   "description": "Giriş, çıkış ve mola takibi",
   "lang": "tr",
   "start_url": "./",
@@ -10,21 +10,8 @@
   "background_color": "#EEF1F5",
   "theme_color": "#13203A",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

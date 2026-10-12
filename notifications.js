@@ -3,7 +3,7 @@
   const rules=window.MesaiNotificationRules;
   function create({getSnapshot,onOpen}){
     const config=window.MesaiNotificationsConfig||{};
-    const KEY=config.testMode?"mesaiTakip:notifications:forkRootTest:v1":"mesaiTakip:notifications:v1";
+    const KEY=config.fork?"mesaiTakip:notifications:forkRootTest:v1":"mesaiTakip:notifications:v1";
     const el=id=>document.getElementById(id),api=(config.available===false?"":config.api||"").replace(/\/$/,"");
     const defaults={...rules.defaults,enabled:false};
     let prefs={...defaults},token=null,seq=0,pending=null,timer=0,busy=false,storageOK=true,message="",nextTestAt=0,cooldownTimer=0;
@@ -14,15 +14,14 @@
     function show(){
       if(!el("notifyStatus"))return;
       const permission="Notification" in window?Notification.permission:"unsupported";
-      el("notifyStatus").textContent=message||(!api?(config.available===false?"Bildirim servisi kullanıcı erişimi onayı bekliyor.":"Bildirim servisi kurulum bekliyor."):!supported()?"Bu tarayıcıda bildirim desteği yok. iPhone’da uygulamayı Ana Ekran simgesinden aç.":permission==="denied"?"Bildirim izni kapalı. Telefon ayarlarından açabilirsin.":prefs.enabled&&permission==="granted"?"Bildirimler açık. Saatler Türkiye saatidir.":"Bildirimler kapalı.");
+      el("notifyStatus").textContent=message||(!api?(config.available===false?"Bildirim servisi kullanıcı erişimi onayı bekliyor.":"Bildirim servisi kurulum bekliyor."):!supported()?"Bu tarayıcıda bildirim desteği yok. iPhone’da uygulamayı Ana Ekran simgesinden aç.":permission==="denied"?"Bildirim izni kapalı. Telefon ayarlarından açabilirsin.":prefs.enabled&&permission==="granted"?"Bildirimler açık.":"Bildirimler kapalı.");
       el("notifyEnable").disabled=!api||!supported()||!storageOK||busy;
-      el("notifyEnable").textContent=prefs.enabled?"Bildirimleri kapat":"Bildirimleri etkinleştir";
+      el("notifyEnable").textContent=prefs.enabled?"Bildirimleri kapat":"Bildirimleri aç";
       const remaining=Math.max(0,Math.ceil((nextTestAt-Date.now())/1000));
       el("notifyTest").disabled=!api||!prefs.enabled||permission!=="granted"||busy||remaining>0;
-      el("notifyTest").textContent=remaining?"Tekrar gönder ("+remaining+" sn)":"Test bildirimi gönder";
+      el("notifyTest").textContent=remaining?"Tekrar gönder ("+remaining+" sn)":"Deneme gönder";
       clearTimeout(cooldownTimer);if(remaining)cooldownTimer=setTimeout(show,1000);
-      for(const name of ["break","exit","entry","weekly","canias"]){el("notify-"+name).checked=prefs[name];el("notify-"+name).disabled=busy;}
-      if(config.testMode)for(const name of ["break","exit","entry","weekly","canias"]){const button=el("notify-sample-"+name);if(button)button.disabled=!prefs.enabled||permission!=="granted"||busy;}
+      for(const name of ["break","exit","entry","weekly","canias","goal","missing"]){el("notify-"+name).checked=prefs[name];el("notify-"+name).disabled=busy;}
     }
     async function request(path,body,method="POST"){
       const ctrl=new AbortController(),timeout=setTimeout(()=>ctrl.abort(),10000);
@@ -31,15 +30,15 @@
     function schedule(){
       if(!prefs.enabled||!token||!api)return;
       // Attendance is read, never written by the notification module.
-      // Build the summary once when sending, including after offline recovery.
-      pending={seq:++seq,prefs:{...prefs},snapshot:null};save();
+      const snapshot=getSnapshot();
+      pending={seq:++seq,prefs:{...prefs},snapshot};save();
       clearTimeout(timer);timer=setTimeout(flush,300);
     }
     async function flush(){
       if(busy||!pending||!api||!token)return;
       busy=true;const sent=pending;show();
       try{sent.snapshot=getSnapshot();await request("/device",sent,"PUT");if(pending?.seq===sent.seq){pending=null;save();}message="";}
-      catch{message="Bildirim servisine ulaşılamadı. Mesai kayıtların cihazında korunuyor; bağlantıda tekrar denenecek.";}
+      catch{message="Bağlantı yok. Tekrar denenecek.";}
       finally{busy=false;show();if(pending&&pending.seq!==sent.seq)timer=setTimeout(flush,300);}
     }
     function keyBytes(value){const s=atob(value.replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(s,c=>c.charCodeAt(0));}
@@ -49,7 +48,7 @@
         prefs.enabled=false;const disabled={seq:++seq,prefs:{...prefs},snapshot:getSnapshot()};pending=disabled;save();show();
         busy=true;
         try{const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe();await request("/device",disabled,"PUT");pending=null;save();message="Bildirimler kapatıldı.";}
-        catch{message="Bildirimler cihazda kapatıldı. Servis bağlantısı yenilenince ayar iletilecek.";}
+        catch{message="Bildirimler kapalı. Eşitleme bekliyor.";}
         finally{busy=false;show();}return;
       }
       // Permission is requested directly from the user's tap, before network work.
@@ -63,35 +62,28 @@
         // Persist the subscription identity before enrolling it remotely.
         if(!save())throw Error("storage");
         const snapshot=getSnapshot(),next={...prefs,enabled:true},body={seq:++seq,prefs:next,snapshot,subscription:sub.toJSON()};
-        await request("/device",body,"PUT");prefs=next;pending=null;save();message="Bildirimler etkinleştirildi. Test bildirimi gönderebilirsin.";
+        await request("/device",body,"PUT");prefs=next;pending=null;save();message="Bildirimler açık.";
       }catch{
         // A timed-out enrollment may have reached the server: queue a newer disabled state.
         prefs.enabled=false;
         if(token){pending={seq:++seq,prefs:{...prefs},snapshot:getSnapshot()};save();}
         if(subscribed){try{await subscribed.unsubscribe();}catch{}}
-        message="Bildirimler etkinleştirilemedi. Mesai kayıtların korunuyor; tekrar deneyebilirsin.";
+        message="Bildirimler açılamadı. Tekrar dene.";
       }
       finally{busy=false;show();}
     }
     async function test(){
       if(busy||!prefs.enabled||Date.now()<nextTestAt){show();return;}busy=true;show();
-      try{await request("/test",{});nextTestAt=Date.now()+(config.testMode?5000:30000);message=config.testMode?"Deneme bildirimi gönderim servisine iletildi. Aşağıdaki örnekleri şimdi seçebilirsin.":"Deneme bildirimi gönderim servisine iletildi. Telefonunda görünmesini kontrol et.";}
+      try{await request("/test",{});nextTestAt=Date.now()+(config.fork?5000:30000);message="Deneme bildirimi gönderildi.";}
       catch(error){if(error.status===429){nextTestAt=Date.now()+Math.min(300,Math.max(1,Number(error.retryAfter)||5))*1000;}message=error.message||"Test bildirimi gönderilemedi. Tekrar deneyebilirsin.";}
       finally{busy=false;show();}
     }
-    async function sample(scenario){
-      if(!config.testMode||busy||!prefs.enabled)return;busy=true;show();
-      try{const result=await request("/test-later",{scenario});const label={break:"Mola",exit:"Çıkış",entry:"Giriş",canias:"Canias",weekly:"Haftalık özet"}[scenario];message=label+" örneği planlandı. Uygulamayı kapatıp 1–2 dakika bekle. Farklı örnekleri de seçebilirsin.";}
-      catch(error){message=error.message||"Örnek planlanamadı. Tekrar deneyebilirsin.";}
-      finally{busy=false;show();}
-    }
     el("notifyEnable").addEventListener("click",enable);el("notifyTest").addEventListener("click",test);
-    for(const name of ["break","exit","entry","weekly","canias"])el("notify-"+name).addEventListener("change",e=>{prefs[name]=e.target.checked;save();schedule();show();});
-    if(config.testMode)for(const name of ["break","exit","entry","weekly","canias"])el("notify-sample-"+name)?.addEventListener("click",()=>sample(name));
+    for(const name of ["break","exit","entry","weekly","canias","goal","missing"])el("notify-"+name).addEventListener("change",e=>{prefs[name]=e.target.checked;save();schedule();show();});
     window.addEventListener("online",flush);
     document.addEventListener("visibilitychange",()=>{if(!document.hidden){show();schedule();if(!prefs.enabled&&pending)flush();}});
     navigator.serviceWorker?.addEventListener("message",e=>{if(e.data?.type==="mesai-open")onOpen(e.data.tab);});
-    const requested=new URLSearchParams(location.search).get("notification");if(["today","notes","sum","set"].includes(requested))onOpen(requested);
+    const requested=new URLSearchParams(location.search).get("notification");if(["today","notes","sum",...(config.fork?["set"]:[])].includes(requested))onOpen(requested);
     show();schedule();if(!prefs.enabled&&pending)flush();
     // One best-effort retry; no background timer is claimed to run while the app is closed.
     setInterval(()=>{if(!document.hidden&&pending)flush();},60000);

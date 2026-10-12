@@ -7,10 +7,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mesai">
-<title>Mesai Takip · Bildirim Testi</title>
+<title>Mesai Takip</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#EEF1F5; --surface:#FFFFFF; --ink:#13203A; --muted:#66748A; --line:#DCE2EA; --track:#E6EAF0;
@@ -289,8 +289,7 @@ button{font:inherit; color:inherit}
 .note{font-size:.8rem; color:var(--muted); margin:1rem .2rem 0; text-align:center}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--muted); outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.hero{transition:none}.btn:active{transform:none}.sheet{animation:none}}
-.notify-options{margin-top:.8rem}.notify-options label{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem 0;border-top:1px solid var(--line);font-size:.85rem;font-weight:700}.notify-options small{display:block;font-size:.74rem;font-weight:400;color:var(--muted);margin-top:.2rem}.notify-options input{flex:none;width:1.15rem;height:1.15rem;accent-color:var(--plus)}.notify-card button:disabled{opacity:.5}.notify-card .bk{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-.app-update{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem 1rem;margin:.7rem 0;border:1px solid var(--line);border-radius:16px;background:var(--surface)}.app-update strong{display:block;font-size:.88rem}.app-update small{display:block;font-size:.76rem;color:var(--muted);margin-top:.2rem}.app-update>div{min-width:0}.app-update button{border:0;border-radius:12px;background:var(--plus);color:var(--surface);flex:none;padding:.65rem .9rem;font-size:.8rem}.update-tools{display:flex;align-items:center;justify-content:space-between;gap:.7rem;flex-wrap:wrap}.update-tools small{color:var(--muted)}
+.notify-info{margin-top:.7rem;font-size:.75rem;color:var(--muted)}.notify-info summary{cursor:pointer}.notify-options{margin-top:.6rem}.notify-options label{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.5rem 0;border-top:1px solid var(--line);font-size:.85rem;font-weight:700}.notify-options small{display:block;font-size:.74rem;font-weight:400;color:var(--muted);margin-top:.2rem}.notify-options input{flex:none;width:1.15rem;height:1.15rem;accent-color:var(--plus)}.notify-card button:disabled{opacity:.5}.notify-card .bk{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 </style>
 </head>
 <body>
@@ -300,7 +299,6 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     <span class="pill" id="pill"><i></i><span id="pillText"></span></span>
   </header>
   <div id="demoBox"></div>
-  <aside class="app-update" id="appUpdateBanner" role="status" hidden><div><strong>Uygulamanın yeni bir sürümü var</strong><small id="appUpdateText">Güncelle; kayıtların bu cihazda korunacak.</small></div><button type="button" id="appUpdateApply">Güncelle</button></aside>
 
   <!-- TODAY -->
   <section id="tab-today">
@@ -376,27 +374,21 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     <div class="sec"><h2>Bildirimler</h2></div>
     <div class="card notify-card">
       <p class="foot" id="notifyStatus" role="status" style="margin-top:0">Bildirimler kapalı.</p>
-      <div class="bk"><button type="button" id="notifyEnable" disabled>Bildirimleri etkinleştir</button><button type="button" id="notifyTest" disabled>Test bildirimi gönder</button></div>
+      <div class="bk"><button type="button" id="notifyEnable">Bildirimleri aç</button><button type="button" id="notifyTest" disabled>Deneme gönder</button></div>
       <div class="notify-options">
-        <label><span>Mola hatırlatması<small>Açık mola 15 dakikayı geçince, bir kez</small></span><input type="checkbox" id="notify-break" checked></label>
-        <label><span>Çıkış hatırlatması<small>18:30’dan sonra çıkış kaydı hâlâ açıksa</small></span><input type="checkbox" id="notify-exit" checked></label>
-        <label><span>Giriş hatırlatması<small>Hafta içi 08:30 · izin ve tatilde gönderilmez</small></span><input type="checkbox" id="notify-entry" checked></label>
-        <label><span>Haftalık özet<small>Cumartesi 10:00 · tamamlanan günlerin toplamı</small></span><input type="checkbox" id="notify-weekly" checked></label>
-        <label><span>Canias hatırlatması<small>Cuma 14:00 · girilmemiş dış görev varsa</small></span><input type="checkbox" id="notify-canias" checked></label>
+        <label><span>Mola<small>15 dakika</small></span><input type="checkbox" id="notify-break" checked></label>
+        <label><span>Çıkış<small>18:30</small></span><input type="checkbox" id="notify-exit" checked></label>
+        <label><span>Giriş<small>08:30 · hafta içi</small></span><input type="checkbox" id="notify-entry" checked></label>
+        <label><span>Haftalık özet<small>Cumartesi 10:00</small></span><input type="checkbox" id="notify-weekly" checked></label>
+        <label><span>Canias<small>Perşembe 14:00</small></span><input type="checkbox" id="notify-canias" checked></label>
+        <label><span>Günlük hedef<small>Hedef tamamlanınca</small></span><input type="checkbox" id="notify-goal"></label>
+        <label><span>Eksik kayıt<small>Cuma 16:00</small></span><input type="checkbox" id="notify-missing"></label>
       </div>
-      <p class="foot" style="margin-bottom:0">Geçmişin cihazında kalır. Bildirim için cihaz aboneliğin, açık mola/mesai bilgisi, izin tarihleri ve gerekli özet toplamları servise iletilir. İnternet yoksa son iletilen bilgiler kullanılır. Bu testte hatırlatma kontrolü yaklaşık bir dakikada bir yapılır; gönderimler gecikebilir. Bildirimler giriş veya çıkış kaydetmez.</p>
+      <p class="foot" style="margin-bottom:0">Türkiye saati · Hatırlatmalar gecikebilir.</p>
+      <details class="notify-info"><summary>Bildirim hakkında</summary><p class="foot">Mesai kayıtların cihazında kalır. Aboneliğin, açık mola/mesai durumu, izin tarihleri ve gerekli toplamlar bildirim servisine iletilir. İnternet yoksa son durum kullanılır. Bildirimler kayıt oluşturmaz.</p></details>
     </div>
-    <div class="sec"><h2>Telefonunda dene</h2></div>
-    <div class="card notify-card"><p class="foot" style="margin-top:0">Önce bildirimleri etkinleştir. Aşağıdan bir örnek seç, uygulamayı kapat ve 1–2 dakika bekle. Farklı örnekleri peş peşe seçebilirsin. Aynı örnek bekliyorsa tekrar basmak çoğaltmaz. Bildirime dokununca ilgili sekme açılır.</p>
-    <div class="bk"><button id="notify-sample-break">☕ Mola örneği</button><button id="notify-sample-exit">🌙 Çıkış örneği</button></div>
-    <div class="bk" style="margin-top:.5rem"><button id="notify-sample-entry">👀 Giriş örneği</button><button id="notify-sample-canias">📌 Canias örneği</button></div>
-    <div class="bk" style="margin-top:.5rem"><button id="notify-sample-weekly">📊 Haftalık özet</button></div>
-    <p class="foot">Örnek mesajlar TEST olarak görünür. Gerçek mola kuralını denemek için Bugün sekmesinden mola başlatıp 15 dakika bekleyebilirsin. Sunucu kontrolü yalnızca bir saatlik test oturumu boyunca çalışır.</p>
-    <a href="https://github.com/oguzhancirit/Mesai-Takip/actions/workflows/notification-phone-test.yml" target="_blank" rel="noopener">Test oturumunun durumunu aç</a></div>
     <div class="sec"><h2>Nasıl hesaplanıyor?</h2></div>
     <div class="card"><p class="foot" style="margin:0;font-size:.85rem;line-height:1.5">Fark, günü tamamlanmış kayıtlardan hesaplanır. Varsayılan yemek arası ofiste 12:00–13:00, dış görevde 12:00–12:30’dur. Yemek arasında ofisle dış görev arasında geçersen ilk 30 dakika her durumda, kalan kısım ofiste geçtiyse düşülür. Ofisin yemek saatleri Ayarlar’dan değiştirilebilir; dış görevde aynı başlangıçtan itibaren en fazla 30 dakika düşülür. Günlük net hedef değişmez. Öğleye taşan açık mola yemek başlangıcında kapanır. Hafta sonu ve izinli günlerde çalışılan sürenin tamamı artı yazılır, hafta sonu yemek arası düşülmez. Dış görevdeki molalar takip edilmez. Çekirdek saat içinde ofiste ya da dış görevde olmadığın süreler ihlal sayılır.</p></div>
-    <div class="sec"><h2>Uygulama güncellemeleri</h2></div>
-    <div class="card"><div class="update-tools"><small id="appVersion"></small><button type="button" class="mini" id="appUpdateCheck">Güncellemeleri kontrol et</button></div><p class="foot" id="appUpdateStatus">Yeni sürümler kontrol ediliyor.</p></div>
     <div class="sec"><h2>Yedekleme</h2></div>
     <div class="bk">
       <button type="button" id="export">Tüm kayıtları indir (CSV)</button>
@@ -423,10 +415,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 </div></div>
 <div class="toast" id="toast" role="status" hidden></div>
 
-<script defer src="notifications-config.js?v=2026.10.12.3"></script>
-<script defer src="notification-rules.js?v=2026.10.12.3"></script>
-<script defer src="notifications.js?v=2026.10.12.3"></script>
-<script defer src="app-updates.js?v=2026.10.12.3"></script>
+<script src="notifications-config.js?v=4"></script>
+<script src="notification-rules.js?v=4"></script>
+<script src="notifications.js?v=4"></script>
 <script>
 (function(){
   const DEMO = false;
@@ -532,7 +523,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
   if (STANDALONE) {
     const add = (rel, href) => { const l = document.createElement("link"); l.rel = rel; l.href = href; document.head.appendChild(l); };
     add("manifest", "manifest.webmanifest"); add("apple-touch-icon", "apple-touch-icon.png");
-    // The update controller registers the worker after the first app render.
+    if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
     try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
   }
 
@@ -945,7 +936,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     return { st, f, vv, t, task: x.segs.some(s => s.t === "g") };
   }
   function renderCanias(now){
-    const pending = caniasPending(now), pendingSet = new Set(pending), done = caniasDays(now).filter(k => !pendingSet.has(k));
+    const pending = caniasPending(now), done = caniasDays(now).filter(k => !pending.includes(k));
     $("notesCount").textContent = pending.length + " gün";
     const row = (k, completed) => {
       const x = state.days[k], ready = caniasReady(x, now);
@@ -1043,6 +1034,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
         return '<div class="c" title="' + (b.v == null ? "" : signed(b.v)) + '"><div class="u">' + (b.v > 0 ? '<i style="height:' + p + '%"></i>' : "") + '</div><div class="d">' + (b.v < 0 ? '<i style="height:' + p + '%"></i>' : "") + "</div></div>"; }).join("") +
       '</div><div class="clabels">' + bars.map(b => "<span>" + b.l + "</span>").join("") + "</div></div>" : "";
 
+    const pend = pendingDays(now).filter(k => keyStart(k) >= from || period === "all");
     const allPend = pendingDays(now);
     const pendHtml = '<div class="sec" id="pendSec"><h2>Mazeret izni bekleyenler</h2></div>' + (allPend.length
       ? '<div class="card" style="padding:0"><ul class="plist">' + allPend.map(k => { const vv = violations(k, state.days[k], now);
@@ -1153,11 +1145,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
   }
 
   // ---------- render ----------
-  let renderedMinute=-1;
   function render(){
     const now = Date.now(), today = dayKey(now);
     autoCloseLunch(now);
-    renderedMinute=Math.floor(now/MIN);
     $("title").textContent = TITLES[tab];
     $("sub").textContent = tab === "today" ? dateLabel(today) : "";
     $("pill").hidden = tab !== "today";
@@ -1182,13 +1172,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     if (tab === "set") renderSet();
     if (sheet && !focusIn("#sheetBody")) renderSheet();
   }
-  function renderLive(){
-    if(document.hidden)return;
-    const now=Date.now();
-    if(autoCloseLunch(now)){render();return;}
-    if(Math.floor(now/MIN)!==renderedMinute&&!focusIn("#sheetBody,#tab-set")){render();return;}
-    if(tab==="today"&&state.open){const clock=clockFmt(now-state.open);if($("hBig").textContent!==clock)$("hBig").textContent=clock;}
-  }
+  function renderLive(){ if (autoCloseLunch(Date.now())) render(); else if (tab === "today") renderHero(); }
 
   // ---------- events ----------
   function needsConfirm(now){ const k = dayKey(now); return !isOff(k, dayX(k)) && S().coreE != null && now < at(k, S().coreE); }
@@ -1465,11 +1449,10 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 
 
   $("note").textContent = DEMO ? "Demo modu: kayıtlar örnek veridir, sayfa yenilenince sıfırlanır." : LOCAL_NOTE;
-  $("demoBox").innerHTML = '<p class="demo">Senin forkundaki bildirim testi · Bu adresteki mevcut kayıtların korunur.</p>';
-  let liveTimer=null;
-  function resumeLive(){if(liveTimer!=null)clearInterval(liveTimer);liveTimer=document.hidden?null:setInterval(renderLive,1000);}
-  resumeLive();
-  document.addEventListener("visibilitychange",()=>{if(!document.hidden)render();resumeLive();});
+  if (DEMO) $("demoBox").innerHTML = '<p class="demo">Demo modu: son 2 haftanın örnek verileri yüklü, her şeyi deneyebilirsin.</p>';
+  setInterval(renderLive, 1000);
+  setInterval(() => { if (!focusIn("#sheetBody,#tab-set")) render(); }, 60000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
   if (DEMO) window.__mt = { get state(){ return state; }, set state(v){ state = v; }, norm, netWork, dayFark, violations, breakSum, complete, targetNet, isOff, presence, importCsv, render, dayKey, at, typeOf, missingDays, pendingDays };
   function notificationSnapshot(){
     const now=Date.now(),today=dayKey(now),x=norm(state.days[today]);
@@ -1481,24 +1464,14 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
       else if(d.segs.length)weekMissing++;
     }
     const b=state.open&&dayKey(state.open)===today?state.open:null,L=lunchWin(today)[0];
+    const targetAt=x.segs.some(s=>s.e==null)&&!isOff(today,x)?Math.max(targetEndFrom(today,now,Math.max(0,targetNet(today,x)-netWork(today,x,now)),x,now),S().coreE!=null?at(today,S().coreE):0):null;
     return {capturedAt:now,day:today,hasEntry:x.segs.length>0,shiftOpen:x.segs.some(s=>s.e==null),breakStart:b,breakUntil:b&&L&&b<L.s?L.s:null,
-      offDates:Object.keys(state.days).filter(k=>k>=today&&keyStart(k)<now+180*86400000&&typeOf(state.days[k])!=="normal"),weekStart:start,weekMinutes:Math.round(weekMinutes),weekDays,weekMissing,caniasCount:caniasPending(now).length};
+      offDates:Object.keys(state.days).filter(k=>k>=today&&keyStart(k)<now+180*86400000&&typeOf(state.days[k])!=="normal"),weekStart:start,weekMinutes:Math.round(weekMinutes),weekDays,weekMissing,caniasCount:caniasPending(now).length,targetAt:targetAt!=null&&targetAt<=at(today,1439)?targetAt:null,missingCount:missingDays(now).length};
   }
-  function startServices(){
-    if(!DEMO&&STANDALONE&&window.MesaiAppUpdates){
-      window.MesaiAppUpdates.start({canReload(){
-        if(sheet)return false;
-        if(tab==="set"&&["mesaiS","mesaiE","coreS","coreE","lunchS","lunchE"].some(id=>$(id).value!==mHm(S()[id])))return false;
-        return true;
-      }});
-    }
   if(!DEMO&&STANDALONE&&window.MesaiNotifications&&window.MesaiNotificationRules){
     try{notifyClient=window.MesaiNotifications.create({getSnapshot:notificationSnapshot,onOpen(t){if(["today","notes","sum","set"].includes(t)){tab=t;render();}}});}
     catch{$("notifyStatus").textContent="Bildirimler başlatılamadı. Mesai takibi etkilenmedi.";}
   }
-  }
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",startServices,{once:true});else startServices();
-  try { if (new URLSearchParams(location.search).get("notification") === "set") tab="set"; } catch {}
   render();
   if (!DEMO) connect();
 })();

@@ -4,11 +4,13 @@ Mesai Takip: giriş, çıkış, dış görev ve mola takibi yapan, telefona kuru
 
 ## Proje yapısı
 
-Build adımı, paket yöneticisi, bağımlılık ve test altyapısı yok. Dosyalar olduğu gibi statik olarak servis edilir.
+Build adımı, paket yöneticisi ve bağımlılık yok. Dosyalar olduğu gibi statik olarak servis edilir.
 
 - `index.html`: uygulamanın tamamı. CSS `<style>` içinde, JS tek bir IIFE olarak `<script>` içinde.
 - `sw.js`: service worker. Sayfa için network-first, diğer aynı origin dosyaları ve Google Fonts için cache-first.
 - `manifest.webmanifest`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`: PWA kurulum dosyaları.
+- `tests/`: Node ile çalışan testler (`harness.cjs`, `lunch.cjs`, `stress.cjs`). Uygulamaya ait değil, `sw.js` `CORE` listesine eklenmez.
+- `docs/stress-test-raporu.md`: karma gün ve hata testlerinin raporu.
 
 `index.html` içindeki JS bölümleri `// ---------- storage ----------` gibi başlıklarla ayrılmış: storage, time helpers, interval helpers, day model, html pieces, render, actions, export / import.
 
@@ -20,7 +22,14 @@ python3 -m http.server 8000
 
 Service worker sadece `https:` üzerinde kaydedilir (`index.html` içindeki `location.protocol === "https:"` kontrolü), bu yüzden yerelde offline/cache davranışı test edilemez. Manifest ve service worker sadece sayfa tek başına açıldığında eklenir (`STANDALONE`), claude.ai artifact içinde açıldığında eklenmez.
 
-Otomatik test yok. Değişikliği tarayıcıda elle doğrula: giriş/çıkış, dış görev, mola, geçmiş gün düzenleme, izin işaretleme, CSV dışa/içe aktarma. Mevcut veriyle test etmek için önce gerçek bir CSV yedeği alıp geri yükle.
+Testler paket kurulumu gerektirmez, repo kökünde çalıştırılır:
+
+```sh
+node tests/lunch.cjs
+node tests/stress.cjs
+```
+
+Testler `index.html` içindeki gerçek JS'i Node VM'de, sahte saat ve DOM taklitleriyle çalıştırır. Hesaplama kuralı değişirse test beklentilerini de güncelle. Gerçek tarayıcı, ekran yerleşimi ve telefonun arka plan davranışı bu testlerle doğrulanmaz. Değişikliği tarayıcıda da elle doğrula: giriş/çıkış, dış görev, mola, geçmiş gün düzenleme, izin işaretleme, CSV dışa/içe aktarma. Mevcut veriyle test etmek için önce gerçek bir CSV yedeği alıp geri yükle.
 
 ## Kurallar
 
@@ -78,7 +87,7 @@ CSV yedeği kullanıcının tek dışa aktarma yoludur. İçe aktarma sütunlar�
 
 ## Proje bağlamı
 
-> **Repo durumu (2026-10-07):** Repodaki `index.html`, aşağıda anlatılan v3 arayüzü değil, ondan önceki tek sayfalık sürüm (hafta sonu, dış görev, çekirdek saat ihlali ve izin/rapor/tatil türleri var). v3'e ait şu şeyler repo kodunda **yok**: alt sekmeler, takvim, alt düzenleme paneli, "Günün akışı", zaman damgalarının dakikaya yuvarlanması, 1 dakika içindeki ofis/dış görev geçişinin tür düzeltmesi, geçmiş günde boş bitiş saatinin engellenmesi, çıkışı eksik günlerin uyarı/Özet'te gösterilmesi, 6 haftalık demo verisi ve `window.__mt` test kancaları. Bunlarla ilgili bir iş yapmadan önce kullanıcıdan v3 kodunu iste; repodaki kodda var sayma.
+> **Repo durumu (2026-10-11):** Repodaki `index.html` aşağıda anlatılan v3 arayüzüdür (sekmeler, takvim, alt düzenleme paneli, "Günün akışı", dakikaya yuvarlama, demo modu ve `window.__mt` kancaları dahil). Sonradan eklenenler: takvimde dış görev çizgisi, molaları elle ekleme/düzeltme, tuvalet molası ve Canias hatırlatıcısı. Aşağıdaki bölüm sohbet dönemine ait bir özettir; kodla çeliştiği yerde kod esastır.
 
 > Bu bölüm, uygulamanın claude.ai sohbetinde geliştirildiği dönemin özetidir. Kesin olmayan noktalar "(emin değilim)" ile işaretlidir.
 
@@ -95,21 +104,27 @@ CSV yedeği kullanıcının tek dışa aktarma yoludur. İçe aktarma sütunlar�
 - Asıl mesai: **08:00–17:30**
 - Çekirdek saat: **08:30–16:30**. Bu aralıkta iş başında olmak zorunlu. Dışarıda kalınan süreler ihlal sayılır ve ihlal için **mazeret izni** girilmesi gerekir.
 - Çekirdek saat dışındaki eksikler başka bir gün tamamlanabilir.
-- Yemek arası: **12:00–13:00**. Mola verilsin ya da verilmesin çalışma sayılmaz.
-- Günlük süre yemek dahil 9,5 saat, yani **net hedef 8,5 saat** (hafta içi).
+- Yemek arası **ofiste 12:00–13:00 (1 saat)**, **dış görevde 12:00–12:30 (30 dk)**. Mola verilsin ya da verilmesin çalışma sayılmaz.
+- **Net hedef her durumda 8,5 saat** (hafta içi). Ofiste yemek dahil 9,5 saat (08:00–17:30), dış görevde yemek dahil 9 saat (07:30–16:30; 08:00'de başlanırsa 17:00) kalınır.
+- Yemek arasında ofisle dış görev arasında geçilirse: ilk 30 dk her durumda yemek sayılır, kalan 30 dk ofiste geçtiyse yemek, dış görevde geçtiyse çalışma sayılır. Örnek: 07:30–13:00 dış görev, 13:00–16:30 ofis = 30 dk düşülür, fark 0. 12:30'da dış görevden ofise dönülürse 1 saat düşülür.
 - Not: Daha önce "08:30'da başlayan mesaiye 09:00'a kadar gelinebilir" şeklinde farklı bir tarif de verilmişti. Bu iki tarif arasındaki ilişki (eski kural mı, aynı kuralın farklı anlatımı mı) belirsiz (emin değilim). Uygulama yukarıdaki tarifi kullanıyor.
 - Hafta sonu (cumartesi/pazar): Hedef yok, çalışılan sürenin tamamı artı yazılır, **yemek arası düşülmez**, çekirdek saat kontrolü yok.
 - Yıllık izin, rapor, resmi tatil: Hedef yok, çekirdek saat kontrolü yok, fark 0. O gün çalışılırsa tamamı artı yazılır.
 
 **Uygulamanın hesaplama mantığı:**
 - Gün, parçalardan (`segs`) oluşur: her parça ya **ofis** (`o`) ya da **dış görev** (`g`), başlangıç ve bitiş saatiyle. Aynı gün içinde birden fazla parça olabilir (ör. 08:30–12:00 dış görev, 13:00–17:30 ofis).
-- **Net çalışma** = tüm parçaların birleşimi (çakışan parçalar çift sayılmaz) eksi yemek arasıyla örtüşen süre.
+- **Net çalışma** = tüm parçaların birleşimi (çakışan parçalar çift sayılmaz) eksi yemek arasıyla örtüşen süre. Yemek arasının ilk 30 dk'sı her zaman düşülür; kalan kısmı sadece dış görev parçasıyla örtüşüyorsa düşülmez (`workLunch`).
 - **Molalar çalışma süresinden düşülmez.** Bu bilinçli bir karar. Molalar sadece ayrıca takip edilir ve toplanır.
-- Mola sayımı: Yemek arasına ya da dış görev parçasına denk gelen kısım sayılmaz (ör. 12:40–13:25 molası 25 dk sayılır). Dış görevdeyken mola başlatılamaz.
+- Mola sayımı: Sadece ofis parçalarının içinde kalan kısım sayılır; yemek arasına, dış göreve ya da kayıt olmayan boşluğa denk gelen kısım sayılmaz (ör. 12:40–13:25 molası 25 dk sayılır). Üst üste binen molalar bir kez sayılır. Dış görevdeyken ve yemek arasında mola başlatılamaz.
+- Yemek arasından önce başlayan açık mola, yemek başlangıcında (12:00) kendiliğinden kapanır ve o saate kadar kaydedilir (11:50 molası 10 dk). Dönüş 13:00'ten sonra olsa da yemek sonrası kısım kaydedilmez.
 - **Fark** = net çalışma − günlük hedef. Sadece tamamlanmış günler (açık parçası olmayan günler) farka dahil edilir.
 - **Çekirdek saat ihlali** = çekirdek saat aralığı (yemek arası hariç) içinde ofiste ya da dış görevde olunmayan boşluklar. Türleri: "Geç giriş", "Erken çıkış", "Çekirdek saatte yok". Bugün için ihlal canlı hesaplanır.
 - Hiç kaydı olmayan hafta içi günler ihlal sayılmaz (izin/rapor günleri boşuna ihlal yazmasın diye).
 - Mazeret izni gün bazında bir işarettir (`izin: true`). İhlali sayımdan çıkarmaz, sadece "izin bekleyen" uyarısını kaldırır.
+- Kullanıcının onayladığı kararlar (2026-10-11), değiştirme:
+  - Resmi tatil / izin / rapor günlerinde çalışılırsa yemek arası **düşülür** (hafta sonundan farklı olarak). Ör. tatilde 08:00–17:30 = +8,5 saat.
+  - Çekirdek saat içindeki molalar **ihlal sayılmaz**.
+  - Bugün erken çıkılırsa ihlal süresi çekirdek saat bitene kadar **canlı artar** ve gün sonunda kesinleşir (15:00 çıkışı 15:30'da 30 dk, 16:30'da 90 dk). Bu sırada türü "Çekirdek saatte yok" görünür, çekirdek saat bitince "Erken çıkış" olur.
 - Mesai, çekirdek saat ve yemek saatleri Ayarlar'dan değiştirilebilir. Hedef, mesai süresi eksi yemek arası olarak türetilir.
 
 ### 3. Önemli kararlar ve nedenleri
@@ -117,7 +132,7 @@ CSV yedeği kullanıcının tek dışa aktarma yoludur. İçe aktarma sütunlar�
 **Teknik yapı**
 - Tek bir bağımsız `index.html` (HTML + CSS + vanilla JS), derleme adımı yok. Ek dosyalar: `sw.js`, `manifest.webmanifest`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`.
 - Yayın: **GitHub Pages**, repo adı `Mesai-Takip` (büyük/küçük harf önemli, Pages yolu da böyle), dosyalar repo kökünde. Kullanıcılar linki açıp "Ana ekrana ekle" ile PWA olarak kuruyor.
-- Service worker: Sayfa için önce ağ, sonra önbellek (güncellemeler gelsin diye); diğer dosyalar önbellekten. **Her sürümde `sw.js` içindeki `CACHE` adı artırılmalı** (şu an `mesai-takip-v3`).
+- Service worker: Sayfa için önce ağ, sonra önbellek (güncellemeler gelsin diye); diğer dosyalar önbellekten. **Her sürümde `sw.js` içindeki `CACHE` adı artırılmalı** (güncel değer `sw.js` başında).
 - Veri: `localStorage` anahtarı **`molaTakip:v1`** (tarihsel nedenle ismi "mola" kaldı, değiştirilmemeli). Uygulama `navigator.storage.persist()` istiyor.
 - Kod hem claude.ai artifact'ı hem bağımsız site olarak çalışacak şekilde yazıldı: `window.claude` varsa ve kullanıcı sayfanın sahibiyse veriler hesaba senkronize ediliyor. Yoksa sadece localStorage. Bağımsız mod tespiti: `!window.claude && window.top === window`. Claude Code'da geliştirmeye devam ederken artifact tarafındaki `window.claude` kodu kaldırılabilir (emin değilim, kullanıcıyla netleştirilmeli).
 
@@ -137,6 +152,8 @@ CSV yedeği kullanıcının tek dışa aktarma yoludur. İçe aktarma sütunlar�
 - 1 dakika içinde ofis/dış görev arasında geçiş yapılırsa yeni parça açılmıyor, açık parçanın türü düzeltiliyor (0 dakikalık kayıt oluşmasın diye).
 - İzin/rapor/tatil tarih aralığıyla işaretlendiğinde hafta sonları atlanıyor. En fazla 60 gün.
 - Yedekleme: CSV dışa aktarma (`;` ayraçlı, UTF-8 BOM, Türkçe başlıklar, Excel uyumlu) ve geri yükleme. Geri yükleme birleştirme yapıyor; aynı dosyayı iki kez yüklemek kaydı çoğaltmıyor.
+- Geri yükleme kuralları: Bozuk dosya (geçersiz saat/tarih, bitişi başlangıçtan önce kayıt, dosyanın kendi içinde çakışan kayıtlar) tamamen reddedilir, hiçbir gün kaydedilmez. Cihazdaki kayıttan farklı olan gün (farklı çıkış, farklı mola, çakışan kayıt) atlanır, cihazdaki korunur, diğer günler yüklenir ve atlanan günler mesajda listelenir. Yedekte açık, cihazda kapalı olan kayıt çelişki sayılmaz (gün içinde alınan yedek).
+- Ofis ve dış görev kayıtları elle eklenirken ya da düzeltilirken üst üste binemez. "Tüm gün dış görev" kısayolu sadece boş günde çalışır ve 08:00–17:00 kaydı oluşturur.
 
 **Arayüz (v3)**
 - Altta 4 sekme: **Bugün, Kayıtlar, Özet, Ayarlar**.
@@ -150,7 +167,7 @@ CSV yedeği kullanıcının tek dışa aktarma yoludur. İçe aktarma sütunlar�
 - `const DEMO = true` ile demo sürümü üretiliyor. Ayrı localStorage anahtarı (`mesaiTakip:demo`), sayfa yenilenince sıfırlanıyor, senkronizasyon kapalı.
 - 6 haftalık, 30'dan fazla senaryolu örnek veri üretiliyor. Her günün panelinde "Demo senaryosu: …" notu var.
 - Test kancaları (`window.__mt`) sadece demo modunda açık.
-- Sohbet sırasında Playwright ile 25 hesaplama + 36 arayüz testi çalıştırıldı (hepsi geçti). **Bu test betikleri repoda yok**, yeniden yazılması gerekiyor (emin değilim, kullanıcıyla netleştirilmeli).
+- Sohbet sırasında Playwright ile 25 hesaplama + 36 arayüz testi çalıştırıldı (hepsi geçti). Bu Playwright betikleri repoda yok. Yerine `tests/` altındaki Node testleri eklendi; gerçek tarayıcıda arayüz testi hâlâ yok.
 
 ### 4. Denenip vazgeçilen ya da sorun çıkaranlar
 
@@ -166,15 +183,9 @@ CSV yedeği kullanıcının tek dışa aktarma yoludur. İçe aktarma sütunlar�
 
 ### 5. Yapılmamış, aklımızdaki özellikler ve açık sorular
 
-**Kullanıcı onayını bekleyen kararlar**
-- Resmi tatil / izin / rapor günlerinde çalışılırsa yemek arası şu an **düşülüyor**. Hafta sonu gibi düşülmemeli mi?
-- Molalar çekirdek saat içinde olsa bile ihlal sayılmıyor. Bu doğru mu?
-- Bugün erken çıkılırsa ihlal süresi çekirdek saat bitene kadar canlı artıyor ve gün sonunda kesinleşiyor. Bu davranış uygun mu?
-
 **Yayın durumu**
-- GitHub Pages'te en son yüklenmesi önerilen sürüm: hafta sonu, dış görev, çekirdek saat ihlali ve izin/rapor/tatil türlerini içeren sürüm (eski tek sayfalık arayüz). Repodaki `index.html` bu sürüm; Pages'te yayında olup olmadığı doğrulanmadı (emin değilim).
-- **v3 arayüzü (sekmeler, takvim, alt panel) henüz GitHub'a yüklenmedi.** Yukarıdaki üç soru onaylanınca yayınlanacak.
-- Yayın öncesi kullanıcılara CSV yedeği aldırılması öneriliyor.
+- GitHub Pages `main` dalının kökünden yayınlanıyor. `main`'e merge edilen her değişiklik doğrudan kullanıcılara çıkar; v3 arayüzü yayında.
+- Hesaplamayı ya da veri yapısını değiştiren sürümlerden önce kullanıcılara CSV yedeği aldırılması öneriliyor.
 
 **Önerilmiş ama yapılmamış**
 - Gün türü olarak **yarım gün izin** ve **arife** (13:00'ten sonrası tatil).
@@ -182,4 +193,12 @@ CSV yedeği kullanıcının tek dışa aktarma yoludur. İçe aktarma sütunlar�
 - Cihazlar arası senkronizasyon: Bağımsız sürümde veri tek cihazda. Telefon değişiminde CSV yedeği ile taşınıyor.
 - Harici bir giriş/çıkış sisteminin (PDKS) raporunu içe aktarıp gün gün fark gösterme. Özellik olarak istenmedi (emin değilim).
 - Hafta sonu ve fazla çalışma kayıtları için ayrı bir rapor (emin değilim).
-- Otomatik test betiklerinin repoya eklenmesi.
+- Gerçek tarayıcıda çalışan arayüz testleri (hesaplama testleri `tests/` altında var).
+
+## Sites bildirimleri (taslak)
+
+- `notifications.js`, `notification-rules.js`, `notifications-config.js` isteğe bağlı bildirim istemcisidir. `available:true` yayınlanmış servise erişir. Bildirimler dışındaki performans ve sürüm güncelleme eklemeleri geri alındı. Canias perşembe 14:00; Günlük hedef ve Eksik kayıt isteğe bağlıdır.
+- `notifications-site/` ayrı Sites sunucusunun inceleme kaynaklarıdır; `docs/bildirim-kurulum.md` canlı durum ve yayın adımlarını belirtir. GitHub merge'i Sites sunucu kaynağını kendiliğinden yayınlamaz.
+- `.github/workflows/mesai-notifications.yml` upstream main kimliğiyle beş dakikalık kontrol yapar. OIDC depo ID'si ve workflow yolu kontrolü gevşetilmez. Özel VAPID anahtarını git'e ekleme.
+- Bildirim istemcisi mesai kaydını yazamaz. `molaTakip:v1` ve mevcut GitHub Pages adresi korunur; ham mesai geçmişi sunucuya gönderilemez.
+- Bildirim testleri: `node tests/notifications-client.cjs`, `node tests/notifications-sw.cjs`, `node notifications-site/tests/service.test.mjs`, `node notifications-site/tests/crypto.test.mjs`. Bunlar gerçek iPhone teslimini doğrulamaz.
