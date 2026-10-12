@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#13203A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Mesai TEST">
-<title>Mesai Takip TEST</title>
+<meta name="apple-mobile-web-app-title" content="Mesai">
+<title>Mesai Takip · Bildirim Testi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -289,12 +289,10 @@ button{font:inherit; color:inherit}
 .note{font-size:.8rem; color:var(--muted); margin:1rem .2rem 0; text-align:center}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--muted); outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.hero{transition:none}.btn:active{transform:none}.sheet{animation:none}}
+.notify-options{margin-top:.8rem}.notify-options label{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem 0;border-top:1px solid var(--line);font-size:.85rem;font-weight:700}.notify-options small{display:block;font-size:.74rem;font-weight:400;color:var(--muted);margin-top:.2rem}.notify-options input{flex:none;width:1.15rem;height:1.15rem;accent-color:var(--plus)}.notify-card button:disabled{opacity:.5}.notify-card .bk{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 </style>
-<!-- TEST: only on the fork's test branch, never merge into main -->
-<style>.testbar{position:fixed; top:0; left:0; right:0; z-index:60; height:calc(env(safe-area-inset-top,0px) + 3px); background:#E8590C; pointer-events:none} .testbar b{position:absolute; top:100%; left:50%; transform:translateX(-50%); padding:.05rem .55rem .15rem; border-radius:0 0 8px 8px; background:#E8590C; color:#fff; font-size:.62rem; font-weight:800; letter-spacing:.12em}</style>
 </head>
 <body>
-<div class="testbar" aria-hidden="true"><b>TEST</b></div>
 <main>
   <header class="top">
     <div><h1 id="title">Bugün</h1><p id="sub"></p></div>
@@ -373,13 +371,34 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
       <div class="srow"><label for="lunchS">Yemek arası</label><span class="pair"><input id="lunchS" data-set="lunch" type="time">–<input id="lunchE" data-set="lunch" type="time"></span></div>
     </div>
     <p class="foot" id="setInfo"></p>
+    <div class="sec"><h2>Bildirimler</h2></div>
+    <div class="card notify-card">
+      <p class="foot" id="notifyStatus" role="status" style="margin-top:0">Bildirimler kapalı.</p>
+      <div class="bk"><button type="button" id="notifyEnable">Bildirimleri etkinleştir</button><button type="button" id="notifyTest" disabled>Test bildirimi gönder</button></div>
+      <div class="notify-options">
+        <label><span>Mola hatırlatması<small>Açık mola 15 dakikayı geçince, bir kez</small></span><input type="checkbox" id="notify-break" checked></label>
+        <label><span>Çıkış hatırlatması<small>18:30’dan sonra çıkış kaydı hâlâ açıksa</small></span><input type="checkbox" id="notify-exit" checked></label>
+        <label><span>Giriş hatırlatması<small>Hafta içi 08:30 · izin ve tatilde gönderilmez</small></span><input type="checkbox" id="notify-entry" checked></label>
+        <label><span>Haftalık özet<small>Cumartesi 10:00 · tamamlanan günlerin toplamı</small></span><input type="checkbox" id="notify-weekly" checked></label>
+        <label><span>Canias hatırlatması<small>Cuma 14:00 · girilmemiş dış görev varsa</small></span><input type="checkbox" id="notify-canias" checked></label>
+      </div>
+      <p class="foot" style="margin-bottom:0">Geçmişin cihazında kalır. Bildirim için cihaz aboneliğin, açık mola/mesai bilgisi, izin tarihleri ve gerekli özet toplamları servise iletilir. İnternet yoksa son iletilen bilgiler kullanılır. Bu testte hatırlatma kontrolü yaklaşık bir dakikada bir yapılır; gönderimler gecikebilir. Bildirimler giriş veya çıkış kaydetmez.</p>
+    </div>
+    <div class="sec"><h2>Telefonunda dene</h2></div>
+    <div class="card notify-card"><p class="foot" style="margin-top:0">Önce bildirimleri etkinleştir. Aşağıdan bir örnek seç, uygulamayı kapat ve 1–2 dakika bekle. Her seferinde tek örnek planlanır. Bildirime dokununca ilgili sekme açılır.</p>
+    <div class="bk"><button id="notify-sample-break">☕ Mola örneği</button><button id="notify-sample-exit">🌙 Çıkış örneği</button></div>
+    <div class="bk" style="margin-top:.5rem"><button id="notify-sample-entry">👀 Giriş örneği</button><button id="notify-sample-canias">📌 Canias örneği</button></div>
+    <div class="bk" style="margin-top:.5rem"><button id="notify-sample-weekly">📊 Haftalık özet</button></div>
+    <p class="foot">Örnek mesajlar TEST olarak görünür. Gerçek mola kuralını denemek için Bugün sekmesinden mola başlatıp 15 dakika bekleyebilirsin. Sunucu kontrolü yalnızca bir saatlik test oturumu boyunca çalışır.</p>
+    <a href="https://github.com/oguzhancirit/Mesai-Takip/actions/workflows/notification-phone-test.yml" target="_blank" rel="noopener">Test oturumunun durumunu aç</a></div>
     <div class="sec"><h2>Nasıl hesaplanıyor?</h2></div>
-    <div class="card"><p class="foot" style="margin:0;font-size:.85rem;line-height:1.5">Fark, günü tamamlanmış kayıtlardan hesaplanır. Hafta içi yemek arası çalışmaya da molaya da sayılmaz. Hafta sonu ve izinli günlerde çalışılan sürenin tamamı artı yazılır, hafta sonu yemek arası düşülmez. Dış görevdeki molalar takip edilmez. Çekirdek saat içinde ofiste ya da dış görevde olmadığın süreler ihlal sayılır.</p></div>
+    <div class="card"><p class="foot" style="margin:0;font-size:.85rem;line-height:1.5">Fark, günü tamamlanmış kayıtlardan hesaplanır. Varsayılan yemek arası ofiste 12:00–13:00, dış görevde 12:00–12:30’dur. Yemek arasında ofisle dış görev arasında geçersen ilk 30 dakika her durumda, kalan kısım ofiste geçtiyse düşülür. Ofisin yemek saatleri Ayarlar’dan değiştirilebilir; dış görevde aynı başlangıçtan itibaren en fazla 30 dakika düşülür. Günlük net hedef değişmez. Öğleye taşan açık mola yemek başlangıcında kapanır. Hafta sonu ve izinli günlerde çalışılan sürenin tamamı artı yazılır, hafta sonu yemek arası düşülmez. Dış görevdeki molalar takip edilmez. Çekirdek saat içinde ofiste ya da dış görevde olmadığın süreler ihlal sayılır.</p></div>
     <div class="sec"><h2>Yedekleme</h2></div>
     <div class="bk">
       <button type="button" id="export">Tüm kayıtları indir (CSV)</button>
       <button type="button" id="importBtn">Yedekten geri yükle (CSV)</button>
     </div>
+    <p class="foot">Geri yükleme bu cihazdaki kayıtları silmez, eksik olanları ekler. Bir gün bu cihazda farklı kaydedilmişse bu cihazdaki korunur ve o gün atlanır.</p>
     <input type="file" id="importFile" accept=".csv,text/csv" hidden>
     <p class="note" id="note"></p>
   </section>
@@ -400,6 +419,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 </div></div>
 <div class="toast" id="toast" role="status" hidden></div>
 
+<script src="notifications-config.js"></script>
+<script src="notification-rules.js"></script>
+<script src="notifications.js"></script>
 <script>
 (function(){
   const DEMO = false;
@@ -407,6 +429,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
   const $ = id => document.getElementById(id);
   const DEF = { mesaiS:480, mesaiE:1050, coreS:510, coreE:990, lunchS:720, lunchE:780 };
   let state = { days:{}, open:null, openWc:false, set:{ ...DEF } };
+  let notifyClient = null;
+  function notifySchedule(){ try { notifyClient?.schedule(); } catch(e){} }
 
   const num = v => typeof v === "number" && isFinite(v);
   const TYPES = { normal:"Normal gün", yillik:"Yıllık izin", rapor:"Rapor", tatil:"Resmi tatil" };
@@ -525,11 +549,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     if (d && !taskSegs(d).length) d.caniasConfirmed = "";
     if (isEmpty(d)) delete state.days[key];
     saveLocal();
+    notifySchedule();
     const body = isEmpty(d) ? null : { date:key, segs:d.segs.map(s => ({ ...s })), breaks:d.breaks.map(b => ({ ...b })), izin:d.izin, type:typeOf(d), caniasConfirmed:d.caniasConfirmed || "" };
     enqueue(() => { const ref = db.doc("data/users/" + uid + "/d-" + key); return body ? ref.set(body) : ref.delete(); });
   }
-  function writeOpen(){ saveLocal(); const open = state.open, openWc = state.openWc === true; enqueue(() => db.doc("data/users/" + uid + "/state").set({ open, openWc })); }
-  function writeSettings(){ saveLocal(); const body = { ...state.set }; enqueue(() => db.doc("data/users/" + uid + "/settings").set(body)); }
+  function writeOpen(){ saveLocal(); notifySchedule(); const open = state.open, openWc = state.openWc === true; enqueue(() => db.doc("data/users/" + uid + "/state").set({ open, openWc })); }
+  function writeSettings(){ saveLocal(); notifySchedule(); const body = { ...state.set }; enqueue(() => db.doc("data/users/" + uid + "/settings").set(body)); }
 
   async function connect(){
     if (!window.claude || typeof window.claude.use !== "function") return;
@@ -569,7 +594,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
   const at = (k, m) => keyStart(k) + m * MIN;
   const hm = ms => { const d = new Date(ms); return pad(d.getHours()) + ":" + pad(d.getMinutes()); };
   const mHm = m => m == null ? "" : pad(Math.floor(m/60)) + ":" + pad(m % 60);
-  const hmToM = v => { if (!v) return null; const [h, m] = v.split(":").map(Number); return h * 60 + m; };
+  const hmToM = v => { const hit = /^(\d{1,2}):(\d{2})$/.exec((v || "").trim()); if (!hit) return null; const h = Number(hit[1]), m = Number(hit[2]); return h < 24 && m < 60 ? h * 60 + m : null; };
+  const validDayKey = k => { if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return false; return dayKey(keyStart(k)) === k; };
   const mins = ms => Math.round(ms / MIN);
   const dk = ms => ms < MIN && ms > 0 ? "<1 dk" : mins(ms) + " dk";
   const hdur = ms => { const m = Math.abs(mins(ms)); return m >= 60 ? Math.floor(m/60) + " sa" + (m%60 ? " " + (m%60) + " dk" : "") : m + " dk"; };
@@ -609,6 +635,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
   const lunchOn = () => S().lunchS != null && S().lunchE != null && S().lunchE > S().lunchS;
   const lunchWin = k => lunchOn() && !isWE(k) ? [{ s:at(k, S().lunchS), e:at(k, S().lunchE) }] : [];   // no lunch deduction on weekends
   const lunchLen = () => lunchOn() ? (S().lunchE - S().lunchS) * MIN : 0;
+  const taskLunchE = () => lunchOn() ? Math.min(S().lunchE, S().lunchS + 30) : null;
   const blank = () => ({ segs:[], breaks:[], izin:false, type:"normal", caniasConfirmed:"" });
   const isOff = (k, x) => isWE(k) || typeOf(x) !== "normal";
   const offLabel = (k, x) => typeOf(x) !== "normal" ? TYPES[typeOf(x)] : (isWE(k) ? "Hafta sonu" : "");
@@ -622,13 +649,34 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     return x.segs.map(s => ({ t:s.t, s:s.s, e: s.e != null ? s.e : (live ? Math.max(now, s.s) : null) })).filter(s => s.e != null);
   }
   const presence = (k, x, now) => merge(resolved(k, x, now));
-  const netWork = (k, x, now) => { const L = lunchWin(k); return presence(k, x, now).reduce((t, p) => t + (p.e - p.s) - ovLen(p.s, p.e, L), 0); };
+  // After the first 30 lunch minutes, only recorded external-duty time counts as work.
+  // For target estimates, the current open segment is assumed to continue through lunch.
+  function workLunch(k, x, now, project){
+    const L = lunchWin(k); if (!L.length) return L;
+    const end = at(k, taskLunchE());
+    const tasks = x.segs.filter(s => s.t === "g").map(s => ({ s:Math.max(s.s, end), e:s.e != null ? s.e : (k === dayKey(now) ? (project ? Math.max(now, L[0].e) : now) : end) })).filter(s => s.e > s.s);
+    return subtract(L, merge(tasks));
+  }
+  const netWork = (k, x, now) => { const L = workLunch(k, x, now); return presence(k, x, now).reduce((t, p) => t + (p.e - p.s) - ovLen(p.s, p.e, L), 0); };
   const complete = x => x.segs.length > 0 ? x.segs.every(s => s.e != null) : typeOf(x) !== "normal";
   const dayFark = (k, x, now) => netWork(k, x, now) - targetNet(k, x);
   function excluded(k, x, now){ return merge(lunchWin(k).concat(resolved(k, x, now).filter(s => s.t === "g"))); }
-  const bCount = (k, x, b, now) => (b.e - b.s) - ovLen(b.s, b.e, excluded(k, x, now));
-  const breakSum = (k, x, now) => x.breaks.reduce((t, b) => t + bCount(k, x, b, now), 0);
-  const wcSum = (k, x, now) => x.breaks.reduce((t, b) => t + (b.wc ? bCount(k, x, b, now) : 0), 0);
+  function countedBreaks(k, x, list, now){
+    const spans = subtract(merge(list), excluded(k, x, now));
+    // Old break-only records have no location data; keep their historical totals readable.
+    if (!x.segs.length) return spans;
+    const office = merge(resolved(k, x, now).filter(s => s.t === "o"));
+    return merge(spans.flatMap(b => office.map(o => ({ s:Math.max(b.s, o.s), e:Math.min(b.e, o.e) }))));
+  }
+  const spanSum = spans => spans.reduce((t, b) => t + b.e - b.s, 0);
+  const bCount = (k, x, b, now) => spanSum(countedBreaks(k, x, [b], now));
+  const breakSum = (k, x, now) => spanSum(countedBreaks(k, x, x.breaks, now));
+  const wcSum = (k, x, now) => spanSum(countedBreaks(k, x, x.breaks.filter(b => b.wc), now));
+  function liveBreakTotals(k, x, now){
+    const list = x.breaks.slice();
+    if (state.open && dayKey(state.open) === k) list.push({ s:state.open, e:now, wc:state.openWc });
+    return { total:spanSum(countedBreaks(k, x, list, now)), wc:spanSum(countedBreaks(k, x, list.filter(b => b.wc), now)) };
+  }
   // "34 dk" plus a small "+ 💩 4 dk" line when there was a toilet break (toilet time is part of the break total)
   const brkHtml = (reg, wc) => dk(Math.max(0, reg)) + (wc > 0 ? '<small class="wcl">+ 💩 ' + dk(wc) + "</small>" : "");
 
@@ -644,11 +692,21 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
       ...g, kind: g.s === reqStart ? "Geç giriş" : (g.e === reqEnd ? "Erken çıkış" : "Çekirdek saatte yok")
     }));
   }
-  function targetEndFrom(k, startMs, remaining){
-    const L = lunchWin(k)[0];
-    let t = startMs; if (L && t >= L.s && t < L.e) t = L.e;
-    let e = t + remaining; if (L && t < L.s && e > L.s) e += L.e - L.s;
-    return e;
+  function targetEndFrom(k, startMs, remaining, x, now){
+    let t = startMs, left = remaining;
+    for (const L of workLunch(k, x, now, true)) {
+      if (L.e <= t) continue;
+      if (t < L.s) { const work = L.s - t; if (left <= work) return t + left; left -= work; }
+      t = L.e;
+    }
+    return t + left;
+  }
+  function targetMarker(k, x, now){
+    const spans = subtract(presence(k, x, now), workLunch(k, x, now));
+    let left = targetNet(k, x);
+    for (const p of spans) { if (left <= p.e - p.s) return p.s + left; left -= p.e - p.s; }
+    const segs = resolved(k, x, now);
+    return targetEndFrom(k, Math.max(...segs.map(s => s.e)), left, x, now);
   }
 
   // ---------- timeline ----------
@@ -657,7 +715,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     if (!segs.length) return labels ? '<div class="bar"></div><div class="tlab"><span>' + (isOff(k, x) ? offLabel(k, x) : mHm(S().mesaiS)) + "</span><span>" + (isOff(k, x) ? "" : mHm(S().mesaiE)) + "</span></div>" : "";
     const we = isOff(k, x);
     const first = Math.min(...segs.map(s => s.s)), last = Math.max(...segs.map(s => s.e));
-    const tMark = we ? null : targetEndFrom(k, first, targetNet(k, x));
+    const tMark = we ? null : targetMarker(k, x, now);
     let rs = first, re = last;
     if (!we) { rs = Math.min(rs, at(k, S().mesaiS)); re = Math.max(re, at(k, S().mesaiE), tMark); }
     const span = (re - rs) || 1, p = ms => Math.max(0, Math.min(100, (ms - rs) / span * 100));
@@ -666,7 +724,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     segs.forEach(s => { h += block(s.t, s.s, s.e); });
     const brs = x.breaks.slice(); if (state.open && dayKey(state.open) === k) brs.push({ s:state.open, e:now });
     brs.forEach(b => { h += block("b", b.s, b.e); });
-    lunchWin(k).forEach(l => { h += block("l", l.s, l.e); });
+    workLunch(k, x, now, true).forEach(l => { h += block("l", l.s, l.e); });
     violations(k, x, now).forEach(v => { h += block("v", v.s, v.e); });
     if (!we && S().coreS != null) [S().coreS, S().coreE].forEach(m => { h += '<div class="k" style="left:calc(' + p(at(k, m)) + '% - 1px)"></div>'; });
     if (tMark) h += '<div class="t" style="left:calc(' + p(tMark) + '% - 1px)"></div>';
@@ -682,7 +740,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 
   // ---------- messages & confirm ----------
   let toastTimer = 0;
-  function toast(msg){ const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, 3500); }
+  function toast(msg, ms){ const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, ms || 3500); }
   function arm(btn, label, action){
     if (btn.dataset.armed === "1") { clearTimeout(Number(btn.dataset.timer)); btn.dataset.armed = ""; btn.classList.remove("armed"); btn.textContent = btn.dataset.orig; action(); return; }
     btn.dataset.orig = btn.textContent; btn.dataset.armed = "1"; btn.classList.add("armed"); btn.textContent = label;
@@ -712,8 +770,18 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
   let lock = 0;
   const debounce = () => { const n = Date.now(); if (n - lock < 700) return false; lock = n; return true; };
   const fl = ms => Math.floor(ms / MIN) * MIN;     // records are kept at minute precision, same as what is shown and exported
+  function lunchCut(now){
+    if (!state.open) return null;
+    const L = lunchWin(dayKey(state.open))[0];
+    return L && state.open < L.s && now >= L.s ? L.s : null;
+  }
+  function autoCloseLunch(now){
+    const end = lunchCut(now); if (end == null) return false;
+    closeBreak(end); toast("Yemek arası başladı. Mola " + hm(end) + "’da kapatıldı."); return true;
+  }
   function closeBreak(now){
     if (!state.open) return;
+    const end = lunchCut(now); if (end != null) now = end;
     const s = state.open, wc = state.openWc === true, k = dayKey(s); state.open = null; state.openWc = false;
     const b = { s: fl(s), e: Math.max(fl(now), fl(s)) }; if (wc) b.wc = true;
     getDay(k).breaks.push(b); writeDay(k); writeOpen();
@@ -727,7 +795,14 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     writeDay(k);
     toast((t === "g" ? "Dış görev " : "Ofis girişi ") + hm(now) + " olarak kaydedildi.");
   }
-  // manual break edits: not in the future, fully inside office records, no overlap with other breaks (or the running one)
+  // A day has one location at a time; adjacent records may share a boundary.
+  function segmentError(k, s, skip, day){
+    const others = (day || dayX(k)).segs.filter((z, i) => i !== skip);
+    if (s.e == null && others.some(z => z.e == null)) return "Aynı anda sadece bir açık kayıt olabilir.";
+    const end = s.e == null ? Infinity : s.e;
+    if (end > s.s && others.some(z => (z.e == null || z.e > z.s) && s.s < (z.e == null ? Infinity : z.e) && end > z.s)) return "Bu saatlerde başka bir ofis veya dış görev kaydı var.";
+    return "";
+  }
   function breakError(k, s, e, skip, withOpen){
     if (e <= s) return "Bitiş başlangıçtan sonra olmalı.";
     if (e > Date.now()) return "Bitiş şu andan sonra olamaz.";
@@ -784,7 +859,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
       label = cur.t === "g" ? "Dış görevde, bugün net" : "Bugün net çalışma"; big = hdur(work);
       if (off) sub = "Bugünkü çalışmanın hepsi artı yazılıyor.";
       else if (f < 0) {
-        const tEnd = targetEndFrom(today, now, -f), ce = S().coreE != null ? at(today, S().coreE) : 0;
+        const tEnd = targetEndFrom(today, now, -f, x, now), ce = S().coreE != null ? at(today, S().coreE) : 0;
         sub = "Hedefe <b>" + hdur(-f) + "</b> kaldı. Hedef çıkış <b>" + hm(Math.max(tEnd, ce)) + "</b>" + (ce > tEnd ? " (çekirdek saat)" : "") + ".";
       } else sub = 'Hedefi geçtin, fark <b class="plus">' + signed(f) + "</b>.";
     } else {
@@ -808,16 +883,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     if ($("warn").innerHTML !== w) $("warn").innerHTML = w;
 
     $("tIn").textContent = x.segs.length ? hm(Math.min(...x.segs.map(s => s.s))) : "--:--";
-    const ob = state.open ? openBreakCount(now) : 0, wcT = wcSum(today, x, now) + (state.openWc ? ob : 0), brT = breakSum(today, x, now) + ob;
-    const bh = brkHtml(brT - wcT, wcT); if ($("tBrk").innerHTML !== bh) $("tBrk").innerHTML = bh;
+    const br = liveBreakTotals(today, x, now);
+    const bh = brkHtml(br.total - br.wc, br.wc); if ($("tBrk").innerHTML !== bh) $("tBrk").innerHTML = bh;
     const te = $("tDiff");
     if (segs.length) { te.textContent = signed(f); te.className = cls(f); } else { te.textContent = "–"; te.className = ""; }
   }
-  function openBreakCount(now){
-    const k = dayKey(state.open), x = dayX(k);
-    return Math.max(0, (now - state.open) - ovLen(state.open, now, excluded(k, x, now)));
-  }
-
   // ---------- today: actions (only on state change) ----------
   function renderActs(){
     const today = todayKey(), x = dayX(today), cur = curSeg(), off = isOff(today, x);
@@ -947,7 +1017,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
       const vv = violations(k, x, now); if (x.segs.length || k < today) { vN += vv.length; vM += vSum(vv); }
       if (x.segs.some(s => s.t === "g")) task++;
     });
-    if (state.open && state.open >= from) brk += openBreakCount(now);
+    if (state.open && state.open >= from) { const k = dayKey(state.open), x = dayX(k); brk += liveBreakTotals(k, x, now).total - breakSum(k, x, now); }
 
     // chart data
     let bars = [];
@@ -992,6 +1062,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
   // ---------- settings ----------
   function renderSet(){
     ["mesaiS","mesaiE","coreS","coreE","lunchS","lunchE"].forEach(id => { const el = $(id); if (document.activeElement !== el) el.value = mHm(S()[id]); });
+    try { notifyClient?.show(); } catch(e){}
     $("setInfo").textContent = "Hafta içi net hedef " + hdur((S().mesaiE - S().mesaiS) * MIN - lunchLen()) + ".";
   }
 
@@ -1080,6 +1151,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
   // ---------- render ----------
   function render(){
     const now = Date.now(), today = dayKey(now);
+    autoCloseLunch(now);
     $("title").textContent = TITLES[tab];
     $("sub").textContent = tab === "today" ? dateLabel(today) : "";
     $("pill").hidden = tab !== "today";
@@ -1104,7 +1176,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
     if (tab === "set") renderSet();
     if (sheet && !focusIn("#sheetBody")) renderSheet();
   }
-  function renderLive(){ if (tab === "today") renderHero(); }
+  function renderLive(){ if (autoCloseLunch(Date.now())) render(); else if (tab === "today") renderHero(); }
 
   // ---------- events ----------
   function needsConfirm(now){ const k = dayKey(now); return !isOff(k, dayX(k)) && S().coreE != null && now < at(k, S().coreE); }
@@ -1131,8 +1203,13 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
       if (d.act === "office") startSeg("o", now);
       else if (d.act === "task") startSeg("g", now);
       else if (d.act === "end") endDay(now);
-      else if (d.act === "breakStart") { const c = curSeg(); if (c && c.t === "o" && !state.open) { state.open = now; state.openWc = false; writeOpen(); } }
-      else if (d.act === "wcStart") { const c = curSeg(); if (c && c.t === "o" && !state.open) { state.open = now; state.openWc = true; writeOpen(); } }
+      else if (d.act === "breakStart" || d.act === "wcStart") {
+        const c = curSeg();
+        if (c && c.t === "o" && !state.open) {
+          if (lunchWin(dayKey(now)).some(l => now >= l.s && now < l.e)) { toast("Şu an yemek arası; ayrıca mola başlatılmaz."); return; }
+          state.open = now; state.openWc = d.act === "wcStart"; writeOpen();
+        }
+      }
       else if (d.act === "breakEnd") closeBreak(now);
       render(); if (d.act === "wcStart" && state.open && state.openWc) rain(); return;
     }
@@ -1168,7 +1245,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
       const k = d.addsave, a = hmToM($("addS").value), b = hmToM($("addE").value);
       if (a == null || b == null) { toast("Başlangıç ve bitiş saatini gir."); return; }
       if (b <= a) { toast("Bitiş başlangıçtan sonra olmalı."); return; }
-      getDay(k).segs.push({ t:addKind, s:at(k, a), e:at(k, b) }); writeDay(k); addOpen = false;
+      const s = { t:addKind, s:at(k, a), e:at(k, b) }, err = segmentError(k, s, -1);
+      if (err) { toast(err); return; }
+      getDay(k).segs.push(s); writeDay(k); addOpen = false;
       renderSheet(); render(); toast((addKind === "g" ? "Dış görev" : "Ofis") + " kaydı eklendi."); return;
     }
     if (d.bropen) { brOpen = true; renderSheet(); return; }
@@ -1182,7 +1261,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
       renderSheet(); render(); toast("Mola " + hm(s0) + " – " + hm(e0) + " eklendi."); return;
     }
     if (d.fullg) {
-      const k = d.fullg; getDay(k).segs.push({ t:"g", s:at(k, S().mesaiS), e:at(k, S().mesaiE) }); writeDay(k);
+      if (dayX(d.fullg).segs.length) { toast("Bu günde kayıt var. Dış görev saatlerini Kayıt ekle ile gir."); return; }
+      const k = d.fullg, shorter = lunchOn() && !isOff(k, dayX(k)) ? (S().lunchE - taskLunchE()) : 0;
+      getDay(k).segs.push({ t:"g", s:at(k, S().mesaiS), e:at(k, S().mesaiE - shorter) }); writeDay(k);
       renderSheet(); render(); toast("Tüm gün dış görev eklendi."); return;
     }
     if (d.delseg) {
@@ -1237,15 +1318,15 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
       } else {
         const s0 = fl(state.open), err = breakError(k, s0, ms, -1, false);
         if (err) { toast(err); renderSheet(); return; }
-        const b = { s:s0, e:ms }; if (state.openWc) b.wc = true;
-        state.open = null; state.openWc = false; getDay(k).breaks.push(b); writeDay(k); writeOpen();
-        toast("Mola " + hm(s0) + " – " + hm(ms) + " olarak kaydedildi.");
+        const end = lunchCut(ms) == null ? ms : lunchCut(ms);
+        closeBreak(end);
+        toast("Mola " + hm(s0) + " – " + hm(end) + " olarak kaydedildi.");
       }
       inp.blur(); renderSheet(); render(); return;
     }
     if (inp.dataset.f && inp.dataset.k) {
       const k = inp.dataset.k, i = Number(inp.dataset.i), day = state.days[k]; if (!day || !day.segs[i]) return;
-      const seg = day.segs[i], m = hmToM(inp.value);
+      const seg = { ...day.segs[i] }, m = hmToM(inp.value);
       if (inp.dataset.f === "s") {
         if (m == null) { renderSheet(); return; }
         const ms = at(k, m); if (seg.e != null && ms >= seg.e) { toast("Başlangıç bitişten önce olmalı."); renderSheet(); return; }
@@ -1255,9 +1336,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
         else { const ms = at(k, m); if (ms <= seg.s) { toast("Bitiş başlangıçtan sonra olmalı."); renderSheet(); return; } seg.e = ms; }
         if (seg.e == null && (k !== todayKey() || day.segs.some((s, j) => j !== i && s.e == null))) {
           if (k !== todayKey()) toast("Geçmiş günlerde bitiş saati boş bırakılamaz."); else toast("Aynı anda sadece bir açık kayıt olabilir.");
-          seg.e = seg.s + MIN;
+          renderSheet(); return;
         }
       }
+      const err = segmentError(k, seg, i);
+      if (err) { toast(err); renderSheet(); return; }
+      day.segs[i] = seg;
       writeDay(k); inp.blur(); renderSheet(); render();
     }
   });
@@ -1291,54 +1375,107 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
   });
 
   function importCsv(text){
-    const touched = new Set(); let section = "days", idx = null;
-    const toMs = (k, t) => { const m = /^(\d{1,2}):(\d{2})$/.exec((t || "").trim()); return m ? at(k, Number(m[1]) * 60 + Number(m[2])) : null; };
+    // A broken file (bad time/date, reversed or clashing records inside the file) is rejected as a whole.
+    // A day that differs from what this device already has is skipped; the device copy wins.
+    const pending = new Map(), own = new Map(), skipped = new Set(); let section = "days", idx = null, breakHasType = false;
+    const skip = k => { pending.delete(k); skipped.add(k); };
+    const toMs = (k, t) => { const value = (t || "").trim(); if (!value) return null; const m = hmToM(value); if (m == null) throw new Error(k + ": geçersiz saat " + value); return at(k, m); };
     const parseList = (k, str, t) => (str || "").split("|").map(p => p.trim()).filter(Boolean).map(p => {
-      const [a, b] = p.split("-"); const s = toMs(k, a), e = toMs(k, b); return s == null ? null : { t, s, e: e == null ? null : Math.max(e, s) };
-    }).filter(Boolean);
+      const parts = p.split("-"); if (parts.length !== 2) throw new Error(k + ": başlangıç-bitiş saatlerini kontrol et.");
+      const s = toMs(k, parts[0]), e = toMs(k, parts[1]);
+      if (s == null || (e != null && e < s)) throw new Error(k + ": bitiş başlangıçtan önce olamaz.");
+      return { t, s, e };
+    });
     text.replace(/^\ufeff/, "").split(/\r?\n/).forEach(line => {
       const c = line.split(";"), head = (c[0] || "").trim();
       if (line.trim() === "Molalar") { section = "breaks"; return; }
       if (head === "Tarih" && section === "days") { idx = {}; c.forEach((n, i) => { idx[n.trim()] = i; }); return; }
+      if (head === "Tarih" && section === "breaks") { breakHasType = c.some(n => n.trim() === "Tür"); return; }
       if (!/^\d{4}-\d{2}-\d{2}$/.test(head)) return;
-      const k = head, d = getDay(k);
-      const has = s => d.segs.some(z => Math.abs(z.s - s.s) < MIN && z.t === s.t);
+      if (!validDayKey(head)) throw new Error("Geçersiz tarih: " + head);
+      const k = head;
       if (section === "days" && idx) {
         let segs = [];
         if (idx["Ofis"] != null) segs = segs.concat(parseList(k, c[idx["Ofis"]], "o"));
         if (idx["Dış görev"] != null) segs = segs.concat(parseList(k, c[idx["Dış görev"]], "g"));
-        if (idx["Giriş"] != null) { const s = toMs(k, c[idx["Giriş"]]), e = toMs(k, c[idx["Çıkış"]]); if (s != null) segs.push({ t:"o", s, e: e == null ? null : Math.max(e, s) }); }
-        segs.forEach(s => { if (!has(s)) d.segs.push(s); });
+        if (idx["Giriş"] != null) { const s = toMs(k, c[idx["Giriş"]]), e = toMs(k, c[idx["Çıkış"]]); if (s != null) { if (e != null && e < s) throw new Error(k + ": bitiş başlangıçtan önce olamaz."); segs.push({ t:"o", s, e }); } }
+        const imported = idx["Dış görev"] != null ? parseList(k, c[idx["Dış görev"]], "g") : [];
+        const file = own.get(k) || { segs:[] }; own.set(k, file);
+        segs.forEach(s => { const err = segmentError(k, s, -1, file); if (err) throw new Error(k + ": " + err); file.segs.push(s); });
+        if (skipped.has(k)) return;
+        if (!pending.has(k)) pending.set(k, norm(state.days[k]));
+        const d = pending.get(k);
+        const clash = segs.some(s => {
+          const old = d.segs.find(z => Math.abs(z.s - s.s) < MIN && z.t === s.t);
+          if (old) {
+            // Same record; a backup taken while it was still open is older than the closed copy here.
+            if (s.e == null || (old.e != null && Math.abs(old.e - s.e) < MIN)) return false;
+            return true;
+          }
+          if (segmentError(k, s, -1, d)) return true;
+          d.segs.push(s); return false;
+        });
+        if (clash) { skip(k); return; }
         if (idx["Gün türü"] != null) { const lbl = (c[idx["Gün türü"]] || "").trim(); const t = Object.keys(TYPES).find(z => TYPES[z] === lbl); if (t && t !== "normal") d.type = t; }
         if (idx["Mazeret izni"] != null && (c[idx["Mazeret izni"]] || "").trim() === "Evet") d.izin = true;
         if (idx["Canias’a girildi"] != null && (c[idx["Canias’a girildi"]] || "").trim() === "Evet") {
-          const imported = parseList(k, c[idx["Dış görev"]], "g");
           if (imported.length && taskSignature({ segs:imported }) === taskSignature(d)) d.caniasConfirmed = taskSignature(d);
         }
       } else if (section === "breaks") {
         const s0 = toMs(k, c[1]), e0 = toMs(k, c[2]);
-        if (s0 != null && e0 != null && e0 >= s0 && !d.breaks.some(b => Math.abs(b.s - s0) < MIN)) d.breaks.push((c[5] || "").trim() === "Tuvalet" ? { s:s0, e:e0, wc:true } : { s:s0, e:e0 });
+        if (s0 == null || e0 == null || e0 < s0) throw new Error(k + ": mola başlangıç ve bitişini kontrol et.");
+        if (skipped.has(k)) return;
+        if (!pending.has(k)) pending.set(k, norm(state.days[k]));
+        const d = pending.get(k), old = d.breaks.find(b => Math.abs(b.s - s0) < MIN), wc = (c[5] || "").trim() === "Tuvalet";
+        if (old) {
+          if (Math.abs(old.e - e0) >= MIN || (breakHasType && !!old.wc !== wc)) skip(k);
+        } else d.breaks.push(wc ? { s:s0, e:e0, wc:true } : { s:s0, e:e0 });
       }
-      touched.add(k);
     });
-    touched.forEach(writeDay);
-    return touched.size;
+    // The whole file is checked before any day is saved.
+    pending.forEach((d, k) => { state.days[k] = d; writeDay(k); });
+    return { loaded:pending.size, skipped:[...skipped].sort() };
   }
   $("importBtn").addEventListener("click", () => $("importFile").click());
   $("importFile").addEventListener("change", async e => {
     const f = e.target.files && e.target.files[0]; if (!f) return;
-    try { const n = importCsv(await f.text()); render(); toast(n ? n + " günlük kayıt yüklendi." : "Dosyada kayıt bulunamadı."); }
-    catch(err) { toast("Dosya okunamadı."); }
+    try {
+      const r = importCsv(await f.text()), sk = r.skipped; render();
+      if (!sk.length) toast(r.loaded ? r.loaded + " günlük kayıt yüklendi." : "Dosyada kayıt bulunamadı.");
+      else {
+        const days = sk.slice(0, 5).map(k => k.slice(8) + "." + k.slice(5, 7)).join(", ") + (sk.length > 5 ? " ve " + (sk.length - 5) + " gün daha" : "");
+        toast((r.loaded ? r.loaded + " günlük kayıt yüklendi. " : "") + sk.length + " gün atlandı, bu cihazdaki kayıt farklı: " + days + ".", 8000);
+      }
+    }
+    catch(err) { toast("Yedek yüklenemedi. " + (err.message || "Dosya okunamadı.")); }
     e.target.value = "";
   });
 
 
   $("note").textContent = DEMO ? "Demo modu: kayıtlar örnek veridir, sayfa yenilenince sıfırlanır." : LOCAL_NOTE;
-  if (DEMO) $("demoBox").innerHTML = '<p class="demo">Demo modu: son 2 haftanın örnek verileri yüklü, her şeyi deneyebilirsin.</p>';
+  $("demoBox").innerHTML = '<p class="demo">Senin forkundaki bildirim testi · Bu adresteki mevcut kayıtların korunur.</p>';
   setInterval(renderLive, 1000);
   setInterval(() => { if (!focusIn("#sheetBody,#tab-set")) render(); }, 60000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
   if (DEMO) window.__mt = { get state(){ return state; }, set state(v){ state = v; }, norm, netWork, dayFark, violations, breakSum, complete, targetNet, isOff, presence, importCsv, render, dayKey, at, typeOf, missingDays, pendingDays };
+  function notificationSnapshot(){
+    const now=Date.now(),today=dayKey(now),x=norm(state.days[today]);
+    const start=window.MesaiNotificationRules.monday(today),end=window.MesaiNotificationRules.day(keyStart(start)+4*86400000+12*60*MIN);
+    let weekMinutes=0,weekDays=0,weekMissing=0;
+    for(const k of Object.keys(state.days).filter(k=>k>=start&&k<=end&&k<=today)){
+      const d=norm(state.days[k]);
+      if(complete(d)&&(d.segs.length||typeOf(d)!=="normal")){weekMinutes+=dayFark(k,d,now)/MIN;weekDays++;}
+      else if(d.segs.length)weekMissing++;
+    }
+    const b=state.open&&dayKey(state.open)===today?state.open:null,L=lunchWin(today)[0];
+    return {capturedAt:now,day:today,hasEntry:x.segs.length>0,shiftOpen:x.segs.some(s=>s.e==null),breakStart:b,breakUntil:b&&L&&b<L.s?L.s:null,
+      offDates:Object.keys(state.days).filter(k=>k>=today&&keyStart(k)<now+180*86400000&&typeOf(state.days[k])!=="normal"),weekStart:start,weekMinutes:Math.round(weekMinutes),weekDays,weekMissing,caniasCount:caniasPending(now).length};
+  }
+  if(!DEMO&&STANDALONE&&window.MesaiNotifications&&window.MesaiNotificationRules){
+    try{notifyClient=window.MesaiNotifications.create({getSnapshot:notificationSnapshot,onOpen(t){if(["today","notes","sum","set"].includes(t)){tab=t;render();}}});}
+    catch{$("notifyStatus").textContent="Bildirimler başlatılamadı. Mesai takibi etkilenmedi.";}
+  }
+  try { if (new URLSearchParams(location.search).get("notification") === "set") tab="set"; } catch {}
   render();
   if (!DEMO) connect();
 })();

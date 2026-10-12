@@ -4,6 +4,11 @@ on:
     branches: [test]
     paths:
       - 'notification-test/**'
+      - 'index.html'
+      - 'notifications*.js'
+      - 'notification-rules.js'
+      - 'sw.js'
+      - 'manifest.webmanifest'
       - '.github/workflows/notification-phone-test.yml'
       - '.github/scripts/phone-test.mjs'
 permissions:
