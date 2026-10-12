@@ -31,8 +31,8 @@
     function schedule(){
       if(!prefs.enabled||!token||!api)return;
       // Attendance is read, never written by the notification module.
-      const snapshot=getSnapshot();
-      pending={seq:++seq,prefs:{...prefs},snapshot};save();
+      // Build the summary once when sending, including after offline recovery.
+      pending={seq:++seq,prefs:{...prefs},snapshot:null};save();
       clearTimeout(timer);timer=setTimeout(flush,300);
     }
     async function flush(){
@@ -75,7 +75,7 @@
     }
     async function test(){
       if(busy||!prefs.enabled||Date.now()<nextTestAt){show();return;}busy=true;show();
-      try{await request("/test",{});nextTestAt=Date.now()+(config.testMode?5000:30000);message="Deneme bildirimi gönderim servisine iletildi. Aşağıdaki örnekleri şimdi seçebilirsin.";}
+      try{await request("/test",{});nextTestAt=Date.now()+(config.testMode?5000:30000);message=config.testMode?"Deneme bildirimi gönderim servisine iletildi. Aşağıdaki örnekleri şimdi seçebilirsin.":"Deneme bildirimi gönderim servisine iletildi. Telefonunda görünmesini kontrol et.";}
       catch(error){if(error.status===429){nextTestAt=Date.now()+Math.min(300,Math.max(1,Number(error.retryAfter)||5))*1000;}message=error.message||"Test bildirimi gönderilemedi. Tekrar deneyebilirsin.";}
       finally{busy=false;show();}
     }

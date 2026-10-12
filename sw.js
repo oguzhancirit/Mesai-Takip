@@ -1,6 +1,7 @@
-const CACHE = "mesai-takip-v15";
-const CORE = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "notifications-config.js", "notification-rules.js", "notifications.js?v=2"];
-self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
+const CACHE = "mesai-takip-v16";
+const CORE = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "notifications-config.js?v=2026.10.12.3", "notification-rules.js?v=2026.10.12.3", "notifications.js?v=2026.10.12.3", "app-updates.js?v=2026.10.12.3"];
+self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE))); });
+self.addEventListener("message",e=>{if(e.data?.type==="MESAI_SKIP_WAITING"&&e.source?.url?.startsWith(self.registration.scope))e.waitUntil(self.skipWaiting());});
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith("mesai-takip-") && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
@@ -8,9 +9,13 @@ self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
   const url = new URL(e.request.url);
   if (e.request.mode === "navigate") {
-    // network first for the page so updates arrive, cache when offline
-    e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put("index.html", copy)); return r; })
-      .catch(() => caches.match("index.html")));
+    e.respondWith((async()=>{
+      const cache=await caches.open(CACHE),cached=await cache.match("index.html");
+      const controller=new AbortController(),timer=cached?setTimeout(()=>controller.abort(),1500):null;
+      try{const r=await fetch(e.request,{signal:controller.signal});if(!r.ok&&cached)return cached;if(r.ok)e.waitUntil(cache.put("index.html",r.clone()));return r;}
+      catch(error){if(cached)return cached;throw error;}
+      finally{if(timer)clearTimeout(timer);}
+    })());
     return;
   }
   if (url.origin === location.origin || url.host.endsWith("fonts.googleapis.com") || url.host.endsWith("fonts.gstatic.com")) {
